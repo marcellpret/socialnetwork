@@ -27,6 +27,35 @@ app.get("/user/id.json", function (req, res) {
     });
 });
 
+app.post("/register", (req, res) => {
+    console.log("you are here: ");
+
+    encrypt
+        .hash(req.body.password)
+        .then((hashed) => {
+            console.log("hashed: ", hashed);
+
+            db.addUser(req.body.first, req.body.last, req.body.email, hashed)
+                .then(({ rows: user }) => {
+                    console.log("user: ", user);
+
+                    console.log("user ID ", user[0].id);
+                    req.session.userId = user[0].id;
+                    req.session.first = req.body.first;
+
+                    res.json({ success: true });
+                })
+                .catch((err) => {
+                    console.log("err in /addUser: ", err.constraint);
+                    res.json({ success: false });
+                });
+        })
+        .catch((err) => {
+            console.log("err in hash: ", err);
+            res.json({ success: false });
+        });
+});
+
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "..", "client", "index.html"));
 });

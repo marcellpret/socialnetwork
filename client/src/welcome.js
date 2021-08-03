@@ -4,6 +4,7 @@ export default function Welcome() {
         <>
             <h1>Welcome!</h1>
             <Registration />
+            <a href="#">Log in</a>
         </>
     );
 }

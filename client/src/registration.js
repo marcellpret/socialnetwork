@@ -5,13 +5,13 @@ export class Registration extends Component {
     constructor() {
         super();
         this.state = {
-            error: true,
+            error: false,
         };
         this.handleChange = this.handleChange.bind(this);
     }
     handleChange({ target }) {
-        console.log("which input is running handleChange?", target.name);
-        console.log("value the suer typed:", target.value);
+        // console.log("which input is running handleChange?", target.name);
+        // console.log("value the suer typed:", target.value);
         // updating state!
         this.setState(
             {
@@ -28,21 +28,31 @@ export class Registration extends Component {
         console.log("this.state in Register", this.state);
         axios
             .post("/register", this.state)
-            .then((resp) => {
-                if (resp.data.success) {
+            .then(({ data }) => {
+                console.log("data: ", data);
+
+                if (data.success) {
                     // stuff worked well with registering we want to do sth
                     // that sth is trigger a reload, so that our start.js runs
                     // one more time and asks the server agin whether or not
                     // the user has the correct cookie :)
+                    location.reload();
                 } else {
                     // we should render an error!
                     // we need to update our component's state to conditionally
                     // make an error appear
+                    this.setState({
+                        error: "Please fill up all the inputs!",
+                    });
                 }
             })
             .catch(
-                (err) =>
-                    console.log("something went wrong in POST /register", err)
+                (err) => {
+                    console.log("something went wrong in POST /register", err);
+                    this.setState({
+                        error: "Please fill up all the inputs!",
+                    });
+                }
                 // we need to update our component's state to conditionally
                 // make an error appear
             );
@@ -54,35 +64,41 @@ export class Registration extends Component {
     render() {
         return (
             <section>
-                {this.state.error && (
-                    <h2 style={{ color: "red" }}>{this.state.error} error!!</h2>
-                )}
-                <form>
+                <form className="registrationForm">
+                    <label htmlFor="first">First Name</label>
                     <input
                         name="first"
-                        placeholder="First Name"
+                        id="first"
                         onChange={this.handleChange}
+                        required
                     />
+                    <label htmlFor="last">Last Name</label>
                     <input
                         name="last"
-                        placeholder="Last Name"
+                        id="last"
                         onChange={this.handleChange}
+                        required
                     />
+                    <label htmlFor="email">Email</label>
                     <input
                         name="email"
-                        placeholder="Email"
+                        id="email"
                         onChange={this.handleChange}
+                        required
                     />
+                    <label htmlFor="password">Password</label>
                     <input
                         type="password"
                         name="password"
-                        placeholder="password"
+                        id="password"
                         onChange={this.handleChange}
+                        required
                     />
                     <button onClick={(e) => this.handleSubmit(e)}>
                         Register
                     </button>
                 </form>
+                {this.state.error && <h2>{this.state.error}</h2>}
             </section>
         );
     }
