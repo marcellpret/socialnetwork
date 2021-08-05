@@ -1,8 +1,9 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
+
 import axios from "axios";
 
-export class Registration extends Component {
+export class Login extends Component {
     constructor() {
         super();
         this.state = {
@@ -27,8 +28,14 @@ export class Registration extends Component {
         // when the btn gets clicked we want to make an axios request sending
         // over our value of state
         console.log("this.state in Register", this.state);
+        if (!this.state.email) {
+            this.setState({
+                error: "Please provide an email",
+            });
+        }
+
         axios
-            .post("/register", this.state)
+            .post("/login", this.state)
             .then(({ data }) => {
                 console.log("data: ", data);
 
@@ -37,21 +44,21 @@ export class Registration extends Component {
                     // that sth is trigger a reload, so that our start.js runs
                     // one more time and asks the server agin whether or not
                     // the user has the correct cookie :)
-                    window.history.back();
+                    location.reload();
                 } else {
                     // we should render an error!
                     // we need to update our component's state to conditionally
                     // make an error appear
                     this.setState({
-                        error: "Please fill up all the inputs!",
+                        error: "Wrong password",
                     });
                 }
             })
             .catch(
                 (err) => {
-                    console.log("something went wrong in POST /register", err);
+                    console.log("something went wrong in POST /login", err);
                     this.setState({
-                        error: "Please fill up all the inputs!",
+                        error: "No email found",
                     });
                 }
                 // we need to update our component's state to conditionally
@@ -59,27 +66,13 @@ export class Registration extends Component {
             );
     }
     componentDidMount() {
-        console.log("Register just mounted");
+        console.log("Login just mounted");
     }
 
     render() {
         return (
             <section>
                 <form className="registrationForm">
-                    <label htmlFor="first">First Name</label>
-                    <input
-                        name="first"
-                        id="first"
-                        onChange={this.handleChange}
-                        required
-                    />
-                    <label htmlFor="last">Last Name</label>
-                    <input
-                        name="last"
-                        id="last"
-                        onChange={this.handleChange}
-                        required
-                    />
                     <label htmlFor="email">Email</label>
                     <input
                         name="email"
@@ -95,12 +88,14 @@ export class Registration extends Component {
                         onChange={this.handleChange}
                         required
                     />
-                    <button onClick={(e) => this.handleSubmit(e)}>
-                        Register
-                    </button>
+                    <button onClick={(e) => this.handleSubmit(e)}>Login</button>
                 </form>
                 {this.state.error && <h2>{this.state.error}</h2>}
-                <Link to="/login">Click here to Log in!</Link>
+                <Link to="/reset-password">
+                    Did you forget your password? Click here to reset.
+                </Link>{" "}
+                <br />
+                <Link to="/">Click here to Register!</Link>
             </section>
         );
     }

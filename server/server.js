@@ -3,9 +3,15 @@ const app = express();
 const compression = require("compression");
 const path = require("path");
 const db = require("./db");
-const secrets = require("./secrets.json");
+const secrets = require("./secrets");
 const cookieSession = require("cookie-session");
 const encrypt = require("./encrypt");
+const cryptoRandomString = require("crypto-random-string");
+const ses = require("./ses");
+
+const secretCode = cryptoRandomString({
+    length: 6,
+});
 
 app.use(
     cookieSession({
@@ -29,19 +35,20 @@ app.get("/user/id.json", function (req, res) {
 
 app.post("/register", (req, res) => {
     console.log("you are here: ");
+    const { first, last, email, password } = req.body;
 
     encrypt
-        .hash(req.body.password)
+        .hash(password)
         .then((hashed) => {
             console.log("hashed: ", hashed);
 
-            db.addUser(req.body.first, req.body.last, req.body.email, hashed)
+            db.addUser(first, last, email, hashed)
                 .then(({ rows: user }) => {
                     console.log("user: ", user);
 
                     console.log("user ID ", user[0].id);
                     req.session.userId = user[0].id;
-                    req.session.first = req.body.first;
+                    req.session.first = first;
 
                     res.json({ success: true });
                 })
@@ -55,6 +62,89 @@ app.post("/register", (req, res) => {
             res.json({ success: false });
         });
 });
+
+app.post("/login", (req, res) => {
+    const { email, password } = req.body;
+    db.loginUser(email, password)
+
+        .then(({ rows: user }) => {
+            console.log("user: ", user);
+            if (user.length === 0) {
+                res.json({ success: false });
+            } else {
+                encrypt
+                    .compare(password, user[0].hashed_password)
+                    .then((logged) => {
+                        console.log("logged: ", logged);
+
+                        if (logged) {
+                            req.session.userId = user[0].id;
+                            req.session.first = user[0].first;
+                            res.json({ success: true });
+                        } else {
+                            res.json({ success: false });
+                        }
+                    })
+                    .catch((err) => {
+                        console.log("err in compare: ", err);
+                        res.json({ success: false });
+                    });
+            }
+        })
+        .catch((err) => {
+            console.log("err in loginUser: ", err);
+            res.json({ success: false });
+        });
+});
+
+app.post("/password/reset/start", (req, res) => {
+    const { email } = req.body;
+    console.log("secretCode: ", secretCode);
+    db.loginUser(req.body.email)
+        .then(async ({ rows: user }) => {
+            console.log("user: ", user);
+            if (user.length === 0) {
+                res.json({
+                    success: false,
+                });
+            } else {
+                const saveCode = await db.addCode(email, secretCode);
+                const code = saveCode.rows[0].code;
+                console.log("code: ", code);
+
+                ses.sendEmail(code)
+                    .then(() => {
+                        console.log("it worked!");
+                        res.json({ success: true });
+                    })
+                    .catch((err) => console.log(err));
+            }
+        })
+        .catch((err) => {
+            console.log("err in loginUser: ", err);
+            res.json({ success: false });
+        });
+});
+
+// app.post("/password/reset/verify", (req, res) => {
+//     const { email } = req.body;
+
+//     db.loginUser(req.body.email)
+//         .then(({ rows: user }) => {
+//             console.log("user: ", user);
+//             if (user.length === 0) {
+//                 res.json({
+//                     success: false,
+//                 });
+//             } else {
+//                 res.json({ success: true });
+//             }
+//         })
+//         .catch((err) => {
+//             console.log("err in loginUser: ", err);
+//             res.json({ success: false });
+//         });
+// });
 
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "..", "client", "index.html"));
