@@ -2,10 +2,12 @@ import { HashRouter, Route } from "react-router-dom";
 import { Registration } from "./registration";
 import { Login } from "./login";
 import { ResetPassword } from "./resetPassword";
+import Logo from "./logo";
 
 export default function Welcome() {
     return (
         <>
+            <Logo />
             <h1>Welcome!</h1>
             <HashRouter>
                 <div>

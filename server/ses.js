@@ -10,12 +10,12 @@ if (process.env.NODE_ENV == "production") {
 const ses = new aws.SES({
     accessKeyId: secrets.AWS_KEY,
     secretAccessKey: secrets.AWS_SECRET,
-    region: "us-east-1",
+    region: "eu-central-1",
 });
 
 let sendEmail = (code) => {
     let params = {
-        Source: "marcellpret@gmail.com",
+        Source: "UNsocial Network <maropret@hotmail.com>",
         Destination: {
             ToAddresses: ["marcellpret@gmail.com"],
         },
@@ -35,7 +35,11 @@ let sendEmail = (code) => {
             },
         },
     };
-    return ses.sendEmail(params).promise();
+    return ses
+        .sendEmail(params)
+        .promise()
+        .then(() => console.log("Email sent"))
+        .catch(console.log);
 };
 
 module.exports = {
