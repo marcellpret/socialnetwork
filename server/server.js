@@ -7,7 +7,28 @@ const secrets = require("./secrets");
 const cookieSession = require("cookie-session");
 const encrypt = require("./encrypt");
 const cryptoRandomString = require("crypto-random-string");
+const multer = require("multer");
+const uidSafe = require("uid-safe");
 const ses = require("./ses");
+const s3 = require("./s3");
+
+const diskStorage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, __dirname + "/uploads");
+    },
+    filename: function (req, file, callback) {
+        uidSafe(24).then(function (uid) {
+            callback(null, uid + path.extname(file.originalname));
+        });
+    },
+});
+
+const uploader = multer({
+    storage: diskStorage,
+    limits: {
+        fileSize: 2097152,
+    },
+});
 
 const secretCode = cryptoRandomString({
     length: 6,
@@ -96,6 +117,47 @@ app.post("/login", (req, res) => {
             res.json({ success: false });
         });
 });
+
+app.get("/user", (req, res) => {
+    db.getUser(req.session.userId)
+        .then(({ rows: user }) => {
+            console.log("rows: ", user);
+            res.json(user[0]);
+        })
+        .catch((err) => {
+            console.log("err: ", err);
+            return err;
+        });
+});
+
+app.post(
+    "/uploadAvatar",
+    uploader.single("file"),
+    s3.upload,
+    function (req, res) {
+        // If nothing went wrong the file is already in the uploads directory
+        // console.log("req.file: ", req.file);
+        console.log("Here we are!: ");
+
+        if (req.file) {
+            console.log("req.file: ", req.file);
+            const avatar = `https://newimageboardapp.s3.amazonaws.com/${req.file.filename}`;
+            console.log("avatar: ", avatar);
+
+            db.updateAvatar(req.body.userId, avatar).then(
+                ({ rows: avatar }) => {
+                    console.log("avatar: ", avatar);
+
+                    res.json(avatar[0]);
+                }
+            );
+        } else {
+            res.json({
+                success: false,
+            });
+        }
+    }
+);
 
 app.post("/password/reset/start", (req, res) => {
     const { email } = req.body;

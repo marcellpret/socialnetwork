@@ -1,7 +1,29 @@
+* {
+    --dark: rgba(53, 53, 53, 1);
+    --accent: rgba(60, 110, 113, 1);
+    --light: rgba(217, 217, 217, 1);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    background-color: slategray;
+    color: var(--dark);
+    background-color: var(--light);
+    background-image: linear-gradient(
+        3000deg,
+        var(--accent) -40%,
+        var(--light) 70%
+    );
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
         sans-serif;
+    min-height: 100vh;
+}
+
+main {
+    max-width: 1400px;
+    width: 90vw;
+    margin: 0 auto;
 }
 
 .registrationForm {
@@ -24,7 +46,67 @@ body {
     padding: 0.5em 1.5em;
 }
 
+nav {
+    height: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
 .logo {
+    width: 200px;
     transform: rotateZ(-5deg);
-    margin: 1em 0;
+    filter: drop-shadow(1px 1px 3px rgba(53, 53, 53, 0.5));
+}
+
+.profile-widget {
+    height: 50px;
+}
+
+.profile-widget img {
+    width: 50px;
+    margin-left: 1em;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--accent);
+}
+
+.uploader {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 0.5em;
+    background-color: var(--accent);
+    color: var(--light);
+    border-radius: 3px;
+    box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.uploader label {
+    cursor: pointer;
+}
+
+.uploader input[type="file"] {
+    position: fixed;
+    top: -100px;
+}
+
+.profile .profile-widget {
+    height: 200px;
+}
+
+.profile .profile-widget img {
+    width: 200px;
+    height: 100%;
+    border-radius: 3px;
+    object-fit: cover;
+    background-color: var(--accent);
+    margin: 0;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2), 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.profile h3 {
+    margin-top: 1em;
 }

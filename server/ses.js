@@ -10,12 +10,12 @@ if (process.env.NODE_ENV == "production") {
 const ses = new aws.SES({
     accessKeyId: secrets.AWS_KEY,
     secretAccessKey: secrets.AWS_SECRET,
-    region: "eu-central-1",
+    region: "us-east-1",
 });
 
 let sendEmail = (code) => {
     let params = {
-        Source: "UNsocial Network <maropret@hotmail.com>",
+        Source: "UNsocial Network <marcellpret@gmail.com>",
         Destination: {
             ToAddresses: ["marcellpret@gmail.com"],
         },
@@ -24,9 +24,9 @@ let sendEmail = (code) => {
             Body: {
                 Text: {
                     Data: `
-                        <h3>Thanks for resetting your password</h3>
-                        <h2>${code}</h2>
-                        <p>Your verification code expires in 10 minutes, make sure to use it before that.</p>
+                        Thanks for resetting your password
+                        ${code}
+                        Your verification code expires in 10 minutes, make sure to use it before that.
                         `,
                 },
             },
@@ -39,7 +39,7 @@ let sendEmail = (code) => {
         .sendEmail(params)
         .promise()
         .then(() => console.log("Email sent"))
-        .catch(console.log);
+        .catch((err) => console.log("error in SES: ", err));
 };
 
 module.exports = {

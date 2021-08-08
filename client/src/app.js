@@ -1,27 +1,48 @@
 import { Component } from "react";
 import Logo from "./logo";
-import Presentational from "./presentational";
+import ProfileWidget from "./profileWidget";
+import Profile from "./profile";
 import Uploader from "./uploader";
+import axios from "axios";
 
 export default class App extends Component {
     constructor() {
         super();
         this.state = {
-            first: "Layla",
-            last: "Arias",
-            age: 11,
-            imageUrl: "",
+            userId: null,
+            first: "",
+            last: "",
+            avatar: "",
             uploaderIsVisible: false,
         };
+        this.toggleModal = this.toggleModal.bind(this);
+        this.updateAvatarInApp = this.updateAvatarInApp.bind(this);
+        console.log("this.state: ", this.state);
     }
 
     // this function runs the second the component is rendered!
     componentDidMount() {
+        console.log("uploaderIsVisible: ", this.state.uploaderIsVisible);
+
         console.log("App mounted");
+
         // here is where we want to make an axios request to 'get' info about the logged in user
         // e.g. first name, last name, imageUrl/profilepic url
         // the axios route '/user' is a good path for it.
         // when we have the info from the server, add it to the state of the component using setState
+        axios
+            .get("/user")
+            .then(({ data }) => {
+                console.log("data in user: ", data);
+                this.setState({
+                    userId: data.id,
+                    first: data.first,
+                    last: data.last,
+                    email: data.email,
+                    avatar: data.avatar,
+                });
+            })
+            .catch((err) => console.log("err in /user: ", err));
     }
 
     toggleModal() {
@@ -33,34 +54,45 @@ export default class App extends Component {
 
     // this fn is responsible for receiving your imageUrl from uploader
     // and then storing it to its state
-    methodInApp(arg) {
+    updateAvatarInApp(arg) {
         console.log(
-            "methodInApp is running! Argument passed to it is --> ",
+            "updateAvatarInApp is running! Argument passed to it is --> ",
             arg
         );
+        this.setState({
+            avatar: arg,
+            uploaderIsVisible: false,
+        });
         // make sure you set the imageUrl you received from uploader in state!
     }
 
     render() {
         return (
             <div>
-                <Logo />
-                <h1>Hello from App!</h1>
+                <nav>
+                    <Logo />
 
-                <Presentational
+                    <ProfileWidget
+                        first={this.state.first}
+                        last={this.state.last}
+                        email={this.state.email}
+                        imageUrl={this.state.avatar}
+                        toggleModal={this.toggleModal}
+                    />
+                    {this.state.uploaderIsVisible && (
+                        <Uploader
+                            userId={this.state.userId}
+                            updateAvatarInApp={this.updateAvatarInApp}
+                        />
+                    )}
+                </nav>
+                <Profile
                     first={this.state.first}
                     last={this.state.last}
-                    age={this.state.age}
-                    imageUrl={this.state.imageUrl}
+                    email={this.state.email}
+                    imageUrl={this.state.avatar}
+                    toggleModal={this.toggleModal}
                 />
-
-                <h2 onClick={() => this.toggleModal()}>
-                    Click here to toggle uploader visibility
-                </h2>
-
-                {this.state.uploaderIsVisible && (
-                    <Uploader methodInApp={this.methodInApp} />
-                )}
             </div>
         );
     }

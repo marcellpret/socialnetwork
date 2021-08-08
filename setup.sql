@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS reset_codes;
+DROP TABLE IF EXISTS users;
 
 
  CREATE TABLE users(
@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS reset_codes;
     last VARCHAR NOT NULL,
     email VARCHAR UNIQUE NOT NULL,
     hashed_password VARCHAR NOT NULL,
+    avatar VARCHAR,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
  );
 

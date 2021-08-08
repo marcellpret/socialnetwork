@@ -18,9 +18,23 @@ module.exports.loginUser = (email, password) => {
     );
 };
 
+module.exports.getUser = (id) => {
+    return db.query(
+        `SELECT id, first, last, email, avatar FROM users WHERE id=($1)`,
+        [id]
+    );
+};
+
 module.exports.addCode = (email, code) => {
     return db.query(
         `INSERT INTO reset_codes (email, code) VALUES ($1,$2) RETURNING email, code, id`,
         [email, code]
+    );
+};
+
+module.exports.updateAvatar = (userId, avatar) => {
+    return db.query(
+        `UPDATE users SET avatar=($2) WHERE id=($1) RETURNING avatar`,
+        [userId, avatar]
     );
 };
