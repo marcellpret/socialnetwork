@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS users;
     email VARCHAR UNIQUE NOT NULL,
     hashed_password VARCHAR NOT NULL,
     avatar VARCHAR,
+    bio VARCHAR,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
  );
 

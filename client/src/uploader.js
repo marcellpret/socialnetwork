@@ -50,7 +50,7 @@ export default class Uploader extends Component {
     render() {
         return (
             <div className="uploader">
-                <label htmlFor="file">⬇️ Update your profile picture</label>
+                <label htmlFor="file">🔽 Update your profile picture</label>
                 <input
                     type="file"
                     name="file"

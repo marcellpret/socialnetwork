@@ -13,17 +13,17 @@ export default class App extends Component {
             first: "",
             last: "",
             avatar: "",
-            uploaderIsVisible: false,
+            bio: "",
+            isUpdaterVisible: false,
         };
         this.toggleModal = this.toggleModal.bind(this);
         this.updateAvatarInApp = this.updateAvatarInApp.bind(this);
+        this.updateBioInApp = this.updateBioInApp.bind(this);
         console.log("this.state: ", this.state);
     }
 
     // this function runs the second the component is rendered!
     componentDidMount() {
-        console.log("uploaderIsVisible: ", this.state.uploaderIsVisible);
-
         console.log("App mounted");
 
         // here is where we want to make an axios request to 'get' info about the logged in user
@@ -40,6 +40,7 @@ export default class App extends Component {
                     last: data.last,
                     email: data.email,
                     avatar: data.avatar,
+                    bio: data.bio,
                 });
             })
             .catch((err) => console.log("err in /user: ", err));
@@ -48,20 +49,24 @@ export default class App extends Component {
     toggleModal() {
         // console.log("toggleModal in app is running!!!");
         this.setState({
-            uploaderIsVisible: !this.state.uploaderIsVisible,
+            isUpdaterVisible: !this.state.isUpdaterVisible,
         });
     }
 
     // this fn is responsible for receiving your imageUrl from uploader
     // and then storing it to its state
     updateAvatarInApp(arg) {
-        console.log(
-            "updateAvatarInApp is running! Argument passed to it is --> ",
-            arg
-        );
         this.setState({
             avatar: arg,
-            uploaderIsVisible: false,
+            isUpdaterVisible: false,
+        });
+        // make sure you set the imageUrl you received from uploader in state!
+    }
+
+    updateBioInApp(newBio) {
+        console.log("newBio in App: ", newBio in App);
+        this.setState({
+            bio: newBio,
         });
         // make sure you set the imageUrl you received from uploader in state!
     }
@@ -77,9 +82,10 @@ export default class App extends Component {
                         last={this.state.last}
                         email={this.state.email}
                         imageUrl={this.state.avatar}
+                        bio={this.state.bio}
                         toggleModal={this.toggleModal}
                     />
-                    {this.state.uploaderIsVisible && (
+                    {this.state.isUpdaterVisible && (
                         <Uploader
                             userId={this.state.userId}
                             updateAvatarInApp={this.updateAvatarInApp}
@@ -91,7 +97,9 @@ export default class App extends Component {
                     last={this.state.last}
                     email={this.state.email}
                     imageUrl={this.state.avatar}
+                    bio={this.state.bio}
                     toggleModal={this.toggleModal}
+                    updateBioInApp={this.updateBioInApp}
                 />
             </div>
         );

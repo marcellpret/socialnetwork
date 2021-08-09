@@ -20,7 +20,7 @@ module.exports.loginUser = (email, password) => {
 
 module.exports.getUser = (id) => {
     return db.query(
-        `SELECT id, first, last, email, avatar FROM users WHERE id=($1)`,
+        `SELECT id, first, last, email, bio, avatar FROM users WHERE id=($1)`,
         [id]
     );
 };
@@ -37,4 +37,11 @@ module.exports.updateAvatar = (userId, avatar) => {
         `UPDATE users SET avatar=($2) WHERE id=($1) RETURNING avatar`,
         [userId, avatar]
     );
+};
+
+module.exports.updateBio = (userId, bio) => {
+    return db.query(`UPDATE users SET bio=($2) WHERE id=($1) RETURNING bio`, [
+        userId,
+        bio,
+    ]);
 };

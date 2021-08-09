@@ -159,6 +159,22 @@ app.post(
     }
 );
 
+app.post("/updateBio", async (req, res) => {
+    // If nothing went wrong the file is already in the uploads directory
+    // console.log("req.file: ", req.file);
+    console.log("Here we are!: ", req.body);
+    try {
+        const { rows: bio } = await db.updateBio(
+            req.session.userId,
+            req.body.draftBio
+        );
+
+        res.json(bio);
+    } catch (error) {
+        console.log;
+    }
+});
+
 app.post("/password/reset/start", (req, res) => {
     const { email } = req.body;
     console.log("secretCode: ", secretCode);
