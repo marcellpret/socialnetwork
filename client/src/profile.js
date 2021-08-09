@@ -13,7 +13,7 @@ export default function Profile({
     return (
         <div className="profile">
             <ProfileWidget imageUrl={imageUrl} toggleModal={toggleModal} />
-            <div>
+            <div className="info-profile">
                 <h3>
                     Hey, my name is {first} {last}.
                 </h3>

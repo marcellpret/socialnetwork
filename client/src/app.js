@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import Logo from "./logo";
 import ProfileWidget from "./profileWidget";
 import Profile from "./profile";

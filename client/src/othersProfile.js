@@ -20,18 +20,14 @@ export default class OthersProfile extends Component {
         try {
             const { data } = await axios.get(`/api/user/${otherId}`);
 
-            this.setState(data);
+            if (data) {
+                this.setState(data);
+            } else {
+                this.props.history.push("/");
+            }
         } catch (error) {
             console.log;
         }
-
-        // axios
-        //     .get(`/user/${otherId}`)
-        //     .then(({ data }) => {
-        //         console.log("data in user: ", data);
-        //         this.setState(data);
-        //     })
-        //     .catch((err) => console.log("err in /user: ", err));
     }
 
     render() {
@@ -42,10 +38,10 @@ export default class OthersProfile extends Component {
                     src={this.state.avatar}
                     alt={`${this.state.first} ${this.state.last}`}
                 />
-                <div>
-                    <h1>
+                <div className="info-profile">
+                    <h3>
                         {this.state.first} {this.state.last}
-                    </h1>
+                    </h3>
                     <p>{this.state.bio}</p>
                 </div>
             </div>

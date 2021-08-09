@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 export class Login extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             error: false,
         };
@@ -27,13 +27,6 @@ export class Login extends Component {
         console.log("user clicked register");
         // when the btn gets clicked we want to make an axios request sending
         // over our value of state
-        console.log("this.state in Register", this.state);
-        if (!this.state.email) {
-            this.setState({
-                error: "Please provide an email",
-            });
-        }
-
         axios
             .post("/login", this.state)
             .then(({ data }) => {
@@ -44,7 +37,7 @@ export class Login extends Component {
                     // that sth is trigger a reload, so that our start.js runs
                     // one more time and asks the server agin whether or not
                     // the user has the correct cookie :)
-                    window.history.back();
+                    this.props.history.push("/");
                 } else {
                     // we should render an error!
                     // we need to update our component's state to conditionally

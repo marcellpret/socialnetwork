@@ -85,7 +85,6 @@ app.post("/register", (req, res) => {
 
                     console.log("user ID ", user[0].id);
                     req.session.userId = user[0].id;
-                    req.session.first = first;
 
                     res.json({ success: true });
                 })
@@ -116,7 +115,6 @@ app.post("/login", (req, res) => {
 
                         if (logged) {
                             req.session.userId = user[0].id;
-                            req.session.first = user[0].first;
                             res.json({ success: true });
                         } else {
                             res.json({ success: false });
