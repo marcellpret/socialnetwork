@@ -16,25 +16,15 @@ export default class BioEditor extends Component {
 
     handleChange({ target }) {
         this.setState({ draftBio: target.value });
-        console.log("this.state.draftBio: ", this.state.draftBio);
     }
 
-    async textareaToggle(e) {
-        e.preventDefault();
-        if (this.state.isEditorVisible) {
-            try {
-                await this.updateBio();
-                this.setState({
-                    isEditorVisible: !this.state.isEditorVisible,
-                });
-            } catch (err) {
-                console.log;
-            }
-        } else {
-            this.setState({
-                isEditorVisible: !this.state.isEditorVisible,
-            });
-        }
+    textareaToggle() {
+        console.log("this.state: ", this.state);
+
+        this.setState({
+            isEditorVisible: !this.state.isEditorVisible,
+            draftBio: this.props.bio,
+        });
     }
 
     async updateBio() {
@@ -45,8 +35,8 @@ export default class BioEditor extends Component {
         try {
             const { data } = await axios.post("/updateBio", this.state);
             console.log("data: ", data);
-
             this.props.updateBioInApp(data[0].bio);
+            this.textareaToggle();
         } catch (err) {
             console.log;
         }
@@ -62,7 +52,7 @@ export default class BioEditor extends Component {
                                 defaultValue={this.props.bio}
                                 onChange={this.handleChange}
                             />
-                            <button onClick={this.textareaToggle}>
+                            <button onClick={this.updateBio}>
                                 🔄 Update Bio
                             </button>
                         </div>
@@ -82,9 +72,7 @@ export default class BioEditor extends Component {
                     {this.state.isEditorVisible ? (
                         <div>
                             <textarea onChange={this.handleChange} />
-                            <button onClick={this.textareaToggle}>
-                                ➕ Add Bio
-                            </button>
+                            <button onClick={this.updateBio}>Save</button>
                         </div>
                     ) : (
                         <button onClick={this.textareaToggle}>

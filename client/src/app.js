@@ -1,7 +1,9 @@
 import { Component } from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Logo from "./logo";
 import ProfileWidget from "./profileWidget";
 import Profile from "./profile";
+import OthersProfile from "./othersProfile";
 import Uploader from "./uploader";
 import axios from "axios";
 
@@ -9,11 +11,6 @@ export default class App extends Component {
     constructor() {
         super();
         this.state = {
-            userId: null,
-            first: "",
-            last: "",
-            avatar: "",
-            bio: "",
             isUpdaterVisible: false,
         };
         this.toggleModal = this.toggleModal.bind(this);
@@ -34,14 +31,7 @@ export default class App extends Component {
             .get("/user")
             .then(({ data }) => {
                 console.log("data in user: ", data);
-                this.setState({
-                    userId: data.id,
-                    first: data.first,
-                    last: data.last,
-                    email: data.email,
-                    avatar: data.avatar,
-                    bio: data.bio,
-                });
+                this.setState(data);
             })
             .catch((err) => console.log("err in /user: ", err));
     }
@@ -92,15 +82,35 @@ export default class App extends Component {
                         />
                     )}
                 </nav>
-                <Profile
-                    first={this.state.first}
-                    last={this.state.last}
-                    email={this.state.email}
-                    imageUrl={this.state.avatar}
-                    bio={this.state.bio}
-                    toggleModal={this.toggleModal}
-                    updateBioInApp={this.updateBioInApp}
-                />
+                <Router>
+                    <div className="profile">
+                        <Route
+                            exact
+                            path="/"
+                            render={() => (
+                                <Profile
+                                    first={this.state.first}
+                                    last={this.state.last}
+                                    email={this.state.email}
+                                    imageUrl={this.state.avatar}
+                                    bio={this.state.bio}
+                                    toggleModal={this.toggleModal}
+                                    updateBioInApp={this.updateBioInApp}
+                                />
+                            )}
+                        />
+                        <Route
+                            path="/user/:id"
+                            render={(props) => (
+                                <OthersProfile
+                                    key={props.match.url}
+                                    match={props.match}
+                                    history={props.history}
+                                />
+                            )}
+                        />
+                    </div>
+                </Router>
             </div>
         );
     }

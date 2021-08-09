@@ -54,6 +54,22 @@ app.get("/user/id.json", function (req, res) {
     });
 });
 
+app.get("/logout", function (req, res) {
+    (req.session.userId = null), (req.session.first = null);
+    res.redirect("/");
+});
+
+app.get("/api/user/:id", async (req, res) => {
+    try {
+        const { rows } = await db.getUser(req.params.id);
+        console.log("rows[0]: ", rows[0]);
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.log;
+    }
+});
+
 app.post("/register", (req, res) => {
     console.log("you are here: ");
     const { first, last, email, password } = req.body;
@@ -121,7 +137,6 @@ app.post("/login", (req, res) => {
 app.get("/user", (req, res) => {
     db.getUser(req.session.userId)
         .then(({ rows: user }) => {
-            console.log("rows: ", user);
             res.json(user[0]);
         })
         .catch((err) => {
