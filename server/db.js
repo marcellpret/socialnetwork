@@ -47,5 +47,14 @@ module.exports.updateBio = (userId, bio) => {
 };
 
 module.exports.getLatestUsers = () => {
-    return db.query(`SELECT first, last, avatar FROM users ORDER BY id DESC`);
+    return db.query(
+        `SELECT id, first, last, avatar FROM users ORDER BY id DESC`
+    );
+};
+
+module.exports.findPeople = (searchTerm) => {
+    return db.query(
+        `SELECT id, first, last, avatar FROM users WHERE (first || ' ' || last) ILIKE $1`,
+        [searchTerm + "%"]
+    );
 };

@@ -201,6 +201,18 @@ app.get("/api/findpeople", async (req, res) => {
     }
 });
 
+app.get("/api/findpeople/:name", async (req, res) => {
+    console.log("Here we are!: ", req.params);
+    try {
+        const { rows: namesFound } = await db.findPeople(req.params.name);
+        console.log("namesFound: ", namesFound);
+
+        res.json(namesFound);
+    } catch (error) {
+        console.log;
+    }
+});
+
 app.post("/password/reset/start", (req, res) => {
     const { email } = req.body;
     console.log("secretCode: ", secretCode);
