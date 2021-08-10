@@ -188,6 +188,19 @@ app.post("/updateBio", async (req, res) => {
     }
 });
 
+app.get("/api/findpeople", async (req, res) => {
+    // If nothing went wrong the file is already in the uploads directory
+    // console.log("req.file: ", req.file);
+    console.log("Here we are!: ", req.body);
+    try {
+        const { rows: latestUsers } = await db.getLatestUsers();
+
+        res.json(latestUsers);
+    } catch (error) {
+        console.log;
+    }
+});
+
 app.post("/password/reset/start", (req, res) => {
     const { email } = req.body;
     console.log("secretCode: ", secretCode);

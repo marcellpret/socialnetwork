@@ -37,7 +37,7 @@ export class Login extends Component {
                     // that sth is trigger a reload, so that our start.js runs
                     // one more time and asks the server agin whether or not
                     // the user has the correct cookie :)
-                    this.props.history.push("/");
+                    location.replace("/");
                 } else {
                     // we should render an error!
                     // we need to update our component's state to conditionally

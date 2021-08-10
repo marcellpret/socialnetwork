@@ -45,3 +45,7 @@ module.exports.updateBio = (userId, bio) => {
         bio,
     ]);
 };
+
+module.exports.getLatestUsers = () => {
+    return db.query(`SELECT first, last, avatar FROM users ORDER BY id DESC`);
+};

@@ -1,8 +1,9 @@
 import { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Logo from "./logo";
-import ProfileWidget from "./profileWidget";
 import Profile from "./profile";
+import ProfileWidget from "./profileWidget";
+import FindPeople from "./findPeople";
 import OthersProfile from "./othersProfile";
 import Uploader from "./uploader";
 import axios from "axios";
@@ -64,25 +65,27 @@ export default class App extends Component {
     render() {
         return (
             <div>
-                <nav>
-                    <Logo />
-
-                    <ProfileWidget
-                        first={this.state.first}
-                        last={this.state.last}
-                        email={this.state.email}
-                        imageUrl={this.state.avatar}
-                        bio={this.state.bio}
-                        toggleModal={this.toggleModal}
-                    />
-                    {this.state.isUpdaterVisible && (
-                        <Uploader
-                            userId={this.state.userId}
-                            updateAvatarInApp={this.updateAvatarInApp}
-                        />
-                    )}
-                </nav>
                 <Router>
+                    <nav>
+                        <Logo />
+
+                        <Link to="/findpeople">Search People</Link>
+
+                        <ProfileWidget
+                            first={this.state.first}
+                            last={this.state.last}
+                            email={this.state.email}
+                            imageUrl={this.state.avatar}
+                            bio={this.state.bio}
+                            toggleModal={this.toggleModal}
+                        />
+                        {this.state.isUpdaterVisible && (
+                            <Uploader
+                                userId={this.state.userId}
+                                updateAvatarInApp={this.updateAvatarInApp}
+                            />
+                        )}
+                    </nav>
                     <div className="profile">
                         <Route
                             exact
@@ -108,6 +111,10 @@ export default class App extends Component {
                                     history={props.history}
                                 />
                             )}
+                        />
+                        <Route
+                            path="/findpeople"
+                            render={(props) => <FindPeople />}
                         />
                     </div>
                 </Router>
