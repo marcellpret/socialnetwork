@@ -30,38 +30,48 @@ export default function FindPeople() {
     }, [searchTerm]);
 
     return (
-        <div>
-            <h3>Most recent users in our network</h3>
-            <div className="most-recent">
-                {latestUsers.map((latestUser) => (
-                    <div className="most-recent-card" key={latestUser.id}>
-                        <img
-                            src={latestUser.avatar}
-                            alt={`${latestUser.first} ${latestUser.last}`}
-                        />
-                        <p>
-                            {latestUser.first} {latestUser.last}
-                        </p>
-                    </div>
-                ))}
-            </div>
-            <div className="search-users">
-                <label htmlFor="search-user">🔍</label>
-                <input
-                    type="text"
-                    name="search-user"
-                    id="search-user"
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
-            {users.map((user) => (
-                <div className="most-recent-card" key={user.id}>
-                    <img src={user.avatar} alt={`${user.first} ${user.last}`} />
-                    <p>
-                        {user.first} {user.last}
-                    </p>
+        <div className="flex width100">
+            <div className="container">
+                <div className="most-recent">
+                    <h2>Most Recent Users</h2>
+                    {latestUsers.map((latestUser) => (
+                        <div className="most-recent-card" key={latestUser.id}>
+                            <img
+                                src={latestUser.avatar}
+                                alt={`${latestUser.first} ${latestUser.last}`}
+                            />
+                            <p>
+                                {latestUser.first} {latestUser.last}
+                            </p>
+                        </div>
+                    ))}
                 </div>
-            ))}
+            </div>
+            <div className="width100">
+                <div className="search-users">
+                    <label htmlFor="search-user">🔍</label>
+                    <input
+                        type="text"
+                        name="search-user"
+                        id="search-user"
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <div className="flex wrap search-result">
+                    {searchTerm &&
+                        users.map((user) => (
+                            <div className="result-people" key={user.id}>
+                                <img
+                                    src={user.avatar}
+                                    alt={`${user.first} ${user.last}`}
+                                />
+                                <p>
+                                    {user.first} {user.last}
+                                </p>
+                            </div>
+                        ))}
+                </div>
+            </div>
         </div>
     );
 }

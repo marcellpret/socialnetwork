@@ -69,7 +69,9 @@ export default class App extends Component {
                     <nav>
                         <Logo />
 
-                        <Link to="/findpeople">Search People</Link>
+                        <Link className="btn" to="/findpeople">
+                            Search People
+                        </Link>
 
                         <ProfileWidget
                             first={this.state.first}

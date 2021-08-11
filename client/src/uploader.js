@@ -1,5 +1,6 @@
 import { Component } from "react";
 import axios from "axios";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 export default class Uploader extends Component {
     constructor(props) {
@@ -58,6 +59,11 @@ export default class Uploader extends Component {
                     accept="image/*"
                     onChange={(e) => this.selectingFile(e)}
                 />
+                <Router>
+                    <Link className="logout" to="/logout">
+                        ❎ Logout
+                    </Link>
+                </Router>
             </div>
         );
     }

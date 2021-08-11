@@ -48,13 +48,13 @@ module.exports.updateBio = (userId, bio) => {
 
 module.exports.getLatestUsers = () => {
     return db.query(
-        `SELECT id, first, last, avatar FROM users ORDER BY id DESC`
+        `SELECT id, first, last, avatar, bio FROM users ORDER BY id DESC LIMIT 4`
     );
 };
 
 module.exports.findPeople = (searchTerm) => {
     return db.query(
-        `SELECT id, first, last, avatar FROM users WHERE (first || ' ' || last) ILIKE $1`,
+        `SELECT id, first, last, avatar FROM users WHERE (first || ' ' || last) ILIKE $1 ORDER BY id ASC LIMIT 10`,
         [searchTerm + "%"]
     );
 };

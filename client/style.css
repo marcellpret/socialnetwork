@@ -9,6 +9,19 @@
         sans-serif;
 }
 
+.flex {
+    display: flex;
+    gap: 2em;
+}
+
+.wrap {
+    flex-wrap: wrap;
+}
+
+.width100 {
+    width: 100%;
+}
+
 body {
     color: var(--dark);
     background-color: var(--light);
@@ -81,10 +94,27 @@ nav {
     justify-content: space-between;
     align-items: center;
     position: relative;
+    margin-bottom: 2em;
+}
+
+nav .btn {
+    font-size: 1.5em;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--dark);
+    margin-left: auto;
+    padding: 0.3em 0.5em;
+    border-radius: 3px;
+    border: 1px solid var(--dark);
+}
+
+nav .btn:hover {
+    background-color: var(--dark);
+    color: var(--light);
 }
 
 .logo {
-    width: 200px;
+    width: 250px;
     transform: rotateZ(-5deg);
     filter: drop-shadow(1px 1px 3px rgba(53, 53, 53, 0.5));
 }
@@ -95,7 +125,7 @@ nav {
 
 .profile-widget img {
     width: 50px;
-    margin-left: 1em;
+    margin-left: 1.1em;
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
@@ -105,12 +135,23 @@ nav {
 .uploader {
     position: absolute;
     right: 0;
-    bottom: 0;
-    padding: 0.5em;
+    bottom: -50px;
+    padding: 1em;
     background-color: var(--accent);
     color: var(--light);
     border-radius: 3px;
     box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.uploader .logout {
+    color: var(--light);
+    position: relative;
+    display: block;
+    font-weight: inherit;
+    font-size: inherit;
+    border: none;
+    padding: 1em 0 0 0;
+    text-decoration: none;
 }
 
 .uploader label {
@@ -162,19 +203,33 @@ nav {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2), 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
+.container {
+    width: 400px;
+    border-right: 2px dotted var(--light);
+    padding-right: 2em;
+    flex-shrink: 0;
+}
+
 .most-recent {
-    margin-block: 3em;
     display: flex;
     justify-content: space-between;
     gap: 2em;
+    flex-wrap: wrap;
+    padding: 2em;
+    background-color: var(--light);
+    border-radius: 3px;
+}
+
+.most-recent h2 {
+    width: 100%;
+    border-bottom: 2px dotted white;
+    padding-bottom: 0.5em;
 }
 
 .most-recent-card {
     display: flex;
-    width: ;
-    flex-grow: 1;
+    flex: 1;
     gap: 1em;
-    flex-direction: column;
     align-items: center;
 }
 
@@ -183,8 +238,8 @@ nav {
 }
 
 .most-recent-card img {
-    height: 150px;
-    width: 150px;
+    height: 100px;
+    width: 100px;
     border-radius: 50%;
     object-fit: cover;
     background-color: var(--accent);
@@ -192,9 +247,17 @@ nav {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2), 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
+/* .divisor {
+    width: 2px;
+    height: 100%;
+    background-color: var(--accent);
+} */
+
 .search-users {
     position: relative;
     width: 300px;
+    margin-bottom: 2em;
+    align-self: flex-start;
 }
 
 .search-users label {
@@ -211,4 +274,36 @@ nav {
     border-radius: 3px;
     width: 100%;
     font-size: 1em;
+}
+
+.result-people {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    width: 31.1%;
+    min-width: 250px;
+    background-color: var(--light);
+    padding: 1em;
+    border-radius: 3px;
+    border: 1px dotted var(--accent);
+}
+
+.result-people img {
+    flex-shrink: 0;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--accent);
+    margin: 0;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2), 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.result-people p {
+    font-size: 1.3em;
+}
+
+.search-result {
+    justify-content: flex-start;
+    width: 100%;
 }
