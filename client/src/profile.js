@@ -4,7 +4,7 @@ import ProfileWidget from "./profileWidget";
 export default function Profile({
     first,
     last,
-    imageUrl,
+    avatar,
     bio,
     toggleModal,
     updateBioInApp,
@@ -12,10 +12,13 @@ export default function Profile({
     // console.log("props - info passed down from parent (App) --> ", props);
     return (
         <div className="profile">
-            <ProfileWidget imageUrl={imageUrl} toggleModal={toggleModal} />
+            <ProfileWidget avatar={avatar} toggleModal={toggleModal} />
             <div className="info-profile">
                 <h3>
-                    Hey, my name is {first} {last}.
+                    Welcome to your profile page: <br />
+                    <h2>
+                        {first} {last}
+                    </h2>
                 </h3>
                 <BioEditor bio={bio} updateBioInApp={updateBioInApp} />
             </div>

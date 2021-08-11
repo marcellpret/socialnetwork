@@ -28,12 +28,16 @@ export default class Uploader extends Component {
         );
     }
 
+    async logout() {
+        await axios.get("/logout").catch((error) => console.log(error));
+        location.replace("/");
+    }
+
     selectingFile({ target }) {
         console.log("target: ", target.files[0]);
 
         var formData = new FormData();
         formData.append("file", target.files[0]);
-        formData.append("userId", this.props.userId);
         axios
             .post("/uploadAvatar", formData)
             .then(({ data }) => {
@@ -59,11 +63,9 @@ export default class Uploader extends Component {
                     accept="image/*"
                     onChange={(e) => this.selectingFile(e)}
                 />
-                <Router>
-                    <Link className="logout" to="/logout">
-                        ❎ Logout
-                    </Link>
-                </Router>
+                <a className="logout" onClick={() => this.logout()}>
+                    ❎ Logout
+                </a>
             </div>
         );
     }

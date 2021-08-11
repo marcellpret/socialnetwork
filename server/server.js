@@ -70,6 +70,47 @@ app.get("/api/user/:id", async (req, res) => {
     }
 });
 
+app.get("/checkFriendStatus/:otherUserId", async (req, res) => {
+    console.log("req.params.otherUserId: ", req.params.otherUserId);
+    try {
+        const { rows } = await db.checkFriendship(
+            req.session.userId,
+            req.params.otherUserId
+        );
+        console.log("rows[0]: ", rows[0]);
+        if (!rows[0]) {
+            res.json("➕ Add Friend");
+        } else if (rows[0].accepted) {
+            res.json("UNfriend");
+        } else {
+            res.json("❌ Cancel Friend Request");
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.log;
+    }
+});
+
+app.post("/friendship", async (req, res) => {
+    const { buttonText, otherUserId } = req.body;
+    console.log("req.body in Friendship: ", req.body);
+
+    if (
+        buttonText === "❌ Cancel Friend Request" ||
+        buttonText === "UNfriend"
+    ) {
+        console.log("We should cancel: ");
+    } else {
+        const { rows } = await db
+            .addFriendship(req.session.userId, otherUserId)
+            .catch((err) => console.log(err));
+        console.log("data in Insert Friend: ", rows);
+
+        res.json("❌ Cancel Friend Request");
+    }
+});
+
 app.post("/register", (req, res) => {
     console.log("you are here: ");
     const { first, last, email, password } = req.body;
@@ -156,14 +197,15 @@ app.post(
             console.log("req.file: ", req.file);
             const avatar = `https://newimageboardapp.s3.amazonaws.com/${req.file.filename}`;
             console.log("avatar: ", avatar);
+            console.log("req.body.userId in Upload Avatar: ", req.body.userId);
 
-            db.updateAvatar(req.body.userId, avatar).then(
-                ({ rows: avatar }) => {
+            db.updateAvatar(req.session.userId, avatar)
+                .then(({ rows: avatar }) => {
                     console.log("avatar: ", avatar);
 
                     res.json(avatar[0]);
-                }
-            );
+                })
+                .catch((err) => console.log(err));
         } else {
             res.json({
                 success: false,

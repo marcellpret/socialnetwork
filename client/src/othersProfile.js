@@ -1,5 +1,6 @@
 import { Component } from "react";
 import axios from "axios";
+import FriendButton from "./friendButton";
 
 export default class OthersProfile extends Component {
     constructor(props) {
@@ -9,8 +10,8 @@ export default class OthersProfile extends Component {
     }
 
     async componentDidMount() {
-        console.log("othersProfile mounted");
         let otherId = this.props.match.params.id;
+        console.log("othersProfile mounted");
         console.log("this.props.match.params.id: ", otherId);
         // here is where we want to make an axios request to 'get' info about the logged in user
         // e.g. first name, last name, imageUrl/profilepic url
@@ -33,11 +34,14 @@ export default class OthersProfile extends Component {
     render() {
         return (
             <div className="others-profile">
-                <img
-                    className="profile-pic"
-                    src={this.state.avatar}
-                    alt={`${this.state.first} ${this.state.last}`}
-                />
+                <div>
+                    <img
+                        className="profile-pic"
+                        src={this.state.avatar}
+                        alt={`${this.state.first} ${this.state.last}`}
+                    />
+                    <FriendButton otherUserId={this.props.match.params.id} />
+                </div>
                 <div className="info-profile">
                     <h3>
                         {this.state.first} {this.state.last}

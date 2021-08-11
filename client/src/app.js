@@ -67,7 +67,9 @@ export default class App extends Component {
             <div>
                 <Router>
                     <nav>
-                        <Logo />
+                        <Link to="/">
+                            <Logo />
+                        </Link>
 
                         <Link className="btn" to="/findpeople">
                             Search People
@@ -77,7 +79,7 @@ export default class App extends Component {
                             first={this.state.first}
                             last={this.state.last}
                             email={this.state.email}
-                            imageUrl={this.state.avatar}
+                            avatar={this.state.avatar}
                             bio={this.state.bio}
                             toggleModal={this.toggleModal}
                         />
@@ -97,7 +99,7 @@ export default class App extends Component {
                                     first={this.state.first}
                                     last={this.state.last}
                                     email={this.state.email}
-                                    imageUrl={this.state.avatar}
+                                    avatar={this.state.avatar}
                                     bio={this.state.bio}
                                     toggleModal={this.toggleModal}
                                     updateBioInApp={this.updateBioInApp}
