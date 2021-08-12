@@ -76,9 +76,6 @@ module.exports.addFriendship = (sender_id, recipient_id) => {
     );
 };
 
-module.exports.deleteFriendship = (sender_id, recipient_id) => {
-    return db.query(`DELETE FROM friendships WHERE recipient_id=$1`, [
-        sender_id,
-        recipient_id,
-    ]);
+module.exports.deleteFriendship = (friendship_id) => {
+    return db.query(`DELETE FROM friendships WHERE id=$1`, [friendship_id]);
 };

@@ -5,6 +5,7 @@ export default function FriendButton({ otherUserId }) {
     console.log("otherUserId: ", otherUserId);
 
     const [buttonText, setButtonText] = useState("");
+    const [friendshipId, setFriendshipId] = useState();
 
     useEffect(() => {
         (async () => {
@@ -12,7 +13,8 @@ export default function FriendButton({ otherUserId }) {
                 `/checkFriendStatus/${otherUserId}`
             );
             console.log("data in useEffect in friendButton: ", data);
-            setButtonText(data);
+            setButtonText(data.buttonText);
+            setFriendshipId(data.id);
         })();
     }, []);
 
@@ -20,6 +22,7 @@ export default function FriendButton({ otherUserId }) {
         const { data } = await axios.post("/friendship", {
             buttonText,
             otherUserId,
+            friendshipId,
         });
         console.log("data in handleFriendship: ", data);
         setButtonText(data);

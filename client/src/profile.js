@@ -1,5 +1,6 @@
 import BioEditor from "./bioEditor";
 import ProfileWidget from "./profileWidget";
+import FriendButton from "./friendButton";
 
 export default function Profile({
     first,
@@ -12,14 +13,16 @@ export default function Profile({
     // console.log("props - info passed down from parent (App) --> ", props);
     return (
         <div className="profile">
-            <ProfileWidget avatar={avatar} toggleModal={toggleModal} />
+            <div>
+                <ProfileWidget avatar={avatar} toggleModal={toggleModal} />
+            </div>
             <div className="info-profile">
                 <h3>
                     Welcome to your profile page: <br />
-                    <h2>
-                        {first} {last}
-                    </h2>
                 </h3>
+                <h2>
+                    {first} {last}
+                </h2>
                 <BioEditor bio={bio} updateBioInApp={updateBioInApp} />
             </div>
         </div>

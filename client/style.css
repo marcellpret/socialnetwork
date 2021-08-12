@@ -184,8 +184,7 @@ nav .btn:hover {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2), 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
-.info-profile h3 {
-    margin-top: 1em;
+.info-profile h2 {
     margin-bottom: 2em;
 }
 

@@ -77,30 +77,37 @@ app.get("/checkFriendStatus/:otherUserId", async (req, res) => {
             req.session.userId,
             req.params.otherUserId
         );
-        console.log("rows[0]: ", rows[0]);
+        console.log("rows in checkFriendship: ", rows);
         if (!rows[0]) {
-            res.json("➕ Add Friend");
+            res.json({ buttonText: "➕ Add Friend" });
         } else if (rows[0].accepted) {
-            res.json("UNfriend");
+            res.json({ ...rows[0], buttonText: "UNfriend" });
+        } else if (
+            parseInt(req.params.otherUserId) ===
+            parseInt(rows[0].sender_id && rows[0].accepted === false)
+        ) {
+            res.json({ ...rows[0], buttonText: " 👍🏼 Accept Friend Request" });
         } else {
-            res.json("❌ Cancel Friend Request");
+            res.json({ ...rows[0], buttonText: "❌ Cancel Friend Request" });
         }
-
-        res.json(rows[0]);
     } catch (error) {
         console.log;
     }
 });
 
 app.post("/friendship", async (req, res) => {
-    const { buttonText, otherUserId } = req.body;
+    const { buttonText, otherUserId, friendshipId } = req.body;
     console.log("req.body in Friendship: ", req.body);
 
     if (
         buttonText === "❌ Cancel Friend Request" ||
         buttonText === "UNfriend"
     ) {
-        console.log("We should cancel: ");
+        const { rows } = await db
+            .deleteFriendship(friendshipId)
+            .catch((err) => console.log(err));
+        console.log("rows after Cancel: ", rows);
+        res.json("➕ Add Friend");
     } else {
         const { rows } = await db
             .addFriendship(req.session.userId, otherUserId)
