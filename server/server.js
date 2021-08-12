@@ -83,8 +83,8 @@ app.get("/checkFriendStatus/:otherUserId", async (req, res) => {
         } else if (rows[0].accepted) {
             res.json({ ...rows[0], buttonText: "UNfriend" });
         } else if (
-            parseInt(req.params.otherUserId) ===
-            parseInt(rows[0].sender_id && rows[0].accepted === false)
+            parseInt(req.params.otherUserId) === parseInt(rows[0].sender_id) &&
+            rows[0].accepted === false
         ) {
             res.json({ ...rows[0], buttonText: " 👍🏼 Accept Friend Request" });
         } else {
