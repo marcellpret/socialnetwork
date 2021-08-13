@@ -11,6 +11,7 @@ const multer = require("multer");
 const uidSafe = require("uid-safe");
 const ses = require("./ses");
 const s3 = require("./s3");
+const { async } = require("crypto-random-string");
 
 const diskStorage = multer.diskStorage({
     destination: function (req, file, callback) {
@@ -70,6 +71,13 @@ app.get("/api/user/:id", async (req, res) => {
     }
 });
 
+const textInButton = {
+    cancel: "❌ Cancel Friend Request",
+    delete: "❌ UNfriend",
+    add: "➕ Add Friend",
+    accept: "👍🏼 Accept Friend Request",
+};
+
 app.get("/checkFriendStatus/:otherUserId", async (req, res) => {
     console.log("req.params.otherUserId: ", req.params.otherUserId);
     try {
@@ -81,12 +89,12 @@ app.get("/checkFriendStatus/:otherUserId", async (req, res) => {
         if (!rows[0]) {
             res.json({ buttonText: "➕ Add Friend" });
         } else if (rows[0].accepted) {
-            res.json({ ...rows[0], buttonText: "UNfriend" });
+            res.json({ ...rows[0], buttonText: textInButton.delete });
         } else if (
             parseInt(req.params.otherUserId) === parseInt(rows[0].sender_id) &&
             rows[0].accepted === false
         ) {
-            res.json({ ...rows[0], buttonText: " 👍🏼 Accept Friend Request" });
+            res.json({ ...rows[0], buttonText: "👍🏼 Accept Friend Request" });
         } else {
             res.json({ ...rows[0], buttonText: "❌ Cancel Friend Request" });
         }
@@ -100,21 +108,37 @@ app.post("/friendship", async (req, res) => {
     console.log("req.body in Friendship: ", req.body);
 
     if (
-        buttonText === "❌ Cancel Friend Request" ||
-        buttonText === "UNfriend"
+        buttonText === textInButton.cancel ||
+        buttonText === textInButton.delete
     ) {
         const { rows } = await db
             .deleteFriendship(friendshipId)
             .catch((err) => console.log(err));
         console.log("rows after Cancel: ", rows);
-        res.json("➕ Add Friend");
+        res.json(textInButton.add);
+    } else if (buttonText === textInButton.accept) {
+        const { rows } = await db
+            .acceptFriendship(friendshipId)
+            .catch((err) => console.log(err));
+        console.log("rows after accepting: ", rows);
+        res.json(textInButton.delete);
     } else {
         const { rows } = await db
             .addFriendship(req.session.userId, otherUserId)
             .catch((err) => console.log(err));
         console.log("data in Insert Friend: ", rows);
 
-        res.json("❌ Cancel Friend Request");
+        res.json(textInButton.cancel);
+    }
+});
+
+app.get("/friends-and-wannabees", async (req, res) => {
+    try {
+        const { rows } = await db.getFriendsAndWannabees(req.session.userId);
+        console.log("rows in Friends: ", rows);
+        res.json(rows);
+    } catch (error) {
+        console.log("error in Friends and Wanna: ", error);
     }
 });
 

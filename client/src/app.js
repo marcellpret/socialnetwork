@@ -7,6 +7,7 @@ import FindPeople from "./findPeople";
 import OthersProfile from "./othersProfile";
 import Uploader from "./uploader";
 import axios from "axios";
+import Friends from "./friends";
 
 export default class App extends Component {
     constructor() {
@@ -17,7 +18,7 @@ export default class App extends Component {
         this.toggleModal = this.toggleModal.bind(this);
         this.updateAvatarInApp = this.updateAvatarInApp.bind(this);
         this.updateBioInApp = this.updateBioInApp.bind(this);
-        console.log("this.state: ", this.state);
+        // console.log("this.state: ", this.state);
     }
 
     // this function runs the second the component is rendered!
@@ -31,7 +32,7 @@ export default class App extends Component {
         axios
             .get("/user")
             .then(({ data }) => {
-                console.log("data in user: ", data);
+                // console.log("data in user: ", data);
                 this.setState(data);
             })
             .catch((err) => console.log("err in /user: ", err));
@@ -70,25 +71,29 @@ export default class App extends Component {
                         <Link to="/">
                             <Logo />
                         </Link>
+                        <div>
+                            <Link className="btn" to="/friends">
+                                Friends
+                            </Link>
+                            <Link className="btn" to="/findpeople">
+                                Search People
+                            </Link>
 
-                        <Link className="btn" to="/findpeople">
-                            Search People
-                        </Link>
-
-                        <ProfileWidget
-                            first={this.state.first}
-                            last={this.state.last}
-                            email={this.state.email}
-                            avatar={this.state.avatar}
-                            bio={this.state.bio}
-                            toggleModal={this.toggleModal}
-                        />
-                        {this.state.isUpdaterVisible && (
-                            <Uploader
-                                userId={this.state.userId}
-                                updateAvatarInApp={this.updateAvatarInApp}
+                            <ProfileWidget
+                                first={this.state.first}
+                                last={this.state.last}
+                                email={this.state.email}
+                                avatar={this.state.avatar}
+                                bio={this.state.bio}
+                                toggleModal={this.toggleModal}
                             />
-                        )}
+                            {this.state.isUpdaterVisible && (
+                                <Uploader
+                                    userId={this.state.userId}
+                                    updateAvatarInApp={this.updateAvatarInApp}
+                                />
+                            )}
+                        </div>
                     </nav>
                     <div className="profile">
                         <Route
@@ -120,6 +125,7 @@ export default class App extends Component {
                             path="/findpeople"
                             render={(props) => <FindPeople />}
                         />
+                        <Route path="/friends" render={() => <Friends />} />
                     </div>
                 </Router>
             </div>

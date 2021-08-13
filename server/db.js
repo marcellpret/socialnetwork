@@ -76,6 +76,27 @@ module.exports.addFriendship = (sender_id, recipient_id) => {
     );
 };
 
+module.exports.acceptFriendship = (friendship_id) => {
+    return db.query(
+        `UPDATE friendships 
+        SET accepted='true' 
+        WHERE (id = $1) RETURNING accepted`,
+        [friendship_id]
+    );
+};
+
 module.exports.deleteFriendship = (friendship_id) => {
     return db.query(`DELETE FROM friendships WHERE id=$1`, [friendship_id]);
+};
+
+module.exports.getFriendsAndWannabees = (id) => {
+    return db.query(
+        `SELECT users.id, first, last, avatar, accepted
+        FROM friendships
+        JOIN users 
+        ON (accepted = FALSE AND recipient_id = $1 AND sender_id = users.id) 
+        OR (accepted = TRUE AND recipient_id = $1 AND sender_id = users.id) 
+        OR (accepted = TRUE AND sender_id = $1 AND recipient_id = users.id)`,
+        [id]
+    );
 };
