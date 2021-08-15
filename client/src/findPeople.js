@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import OthersProfile from "./othersProfile";
 
 export default function FindPeople() {
     // console.log("props - info passed down from parent (App) --> ", props);
@@ -65,9 +67,14 @@ export default function FindPeople() {
                                     src={user.avatar}
                                     alt={`${user.first} ${user.last}`}
                                 />
-                                <p>
-                                    {user.first} {user.last}
-                                </p>
+                                <div>
+                                    <p>
+                                        {user.first} {user.last}
+                                    </p>
+                                    <Link to={`/user/${user.id}`} key={user.id}>
+                                        Go to profile
+                                    </Link>
+                                </div>
                             </div>
                         ))}
                 </div>

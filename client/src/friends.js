@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { friendsAndWannabes } from "./redux/friends/slice";
+import {
+    acceptFriendRequest,
+    friendsAndWannabes,
+    unfriend,
+} from "./redux/friends/slice";
 import { useDispatch, useSelector } from "react-redux";
 import FriendButton from "./friendButton";
 
@@ -20,6 +24,7 @@ export default function Friends() {
             state.friendsAndWannabes.filter(({ accepted }) => accepted)
         );
     });
+
     const wannabes = useSelector((state) => {
         return (
             state.friendsAndWannabes &&
@@ -31,7 +36,7 @@ export default function Friends() {
     console.log("wannabes: ", wannabes);
 
     return (
-        <div>
+        <div className="width100">
             <section className="friends">
                 <h2>Friends</h2>
                 <div>
@@ -41,10 +46,18 @@ export default function Friends() {
                                 src={friend.avatar}
                                 alt={`${friend.first} ${friend.last}`}
                             />
-                            <p>
-                                {friend.first} {friend.last}
-                            </p>
-                            <FriendButton otherUserId={friend.id} />
+                            <div>
+                                <p>
+                                    {friend.first} {friend.last}
+                                </p>
+                                <button
+                                    onClick={() =>
+                                        dispatch(unfriend(friend.id))
+                                    }
+                                >
+                                    Unfriend
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -58,9 +71,21 @@ export default function Friends() {
                                 src={wannabe.avatar}
                                 alt={`${wannabe.first} ${wannabe.last}`}
                             />
-                            <p>
-                                {wannabe.first} {wannabe.last}
-                            </p>
+                            <div className="width100">
+                                <p>
+                                    {wannabe.first} {wannabe.last}
+                                </p>
+                                {/* <FriendButton otherUserId={wannabe.id} /> */}
+                                <button
+                                    onClick={() =>
+                                        dispatch(
+                                            acceptFriendRequest(wannabe.id)
+                                        )
+                                    }
+                                >
+                                    Accept Friend
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>

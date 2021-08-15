@@ -87,16 +87,16 @@ app.get("/checkFriendStatus/:otherUserId", async (req, res) => {
         );
         console.log("rows in checkFriendship: ", rows);
         if (!rows[0]) {
-            res.json({ buttonText: "➕ Add Friend" });
+            res.json({ buttonText: textInButton.add });
         } else if (rows[0].accepted) {
             res.json({ ...rows[0], buttonText: textInButton.delete });
         } else if (
             parseInt(req.params.otherUserId) === parseInt(rows[0].sender_id) &&
             rows[0].accepted === false
         ) {
-            res.json({ ...rows[0], buttonText: "👍🏼 Accept Friend Request" });
+            res.json({ ...rows[0], buttonText: textInButton.accept });
         } else {
-            res.json({ ...rows[0], buttonText: "❌ Cancel Friend Request" });
+            res.json({ ...rows[0], buttonText: textInButton.cancel });
         }
     } catch (error) {
         console.log;
@@ -104,7 +104,7 @@ app.get("/checkFriendStatus/:otherUserId", async (req, res) => {
 });
 
 app.post("/friendship", async (req, res) => {
-    const { buttonText, otherUserId, friendshipId } = req.body;
+    const { text: buttonText, otherUserId, id: friendshipId } = req.body;
     console.log("req.body in Friendship: ", req.body);
 
     if (
@@ -114,21 +114,20 @@ app.post("/friendship", async (req, res) => {
         const { rows } = await db
             .deleteFriendship(friendshipId)
             .catch((err) => console.log(err));
-        console.log("rows after Cancel: ", rows);
-        res.json(textInButton.add);
+        res.json({ buttonText: textInButton.add });
     } else if (buttonText === textInButton.accept) {
         const { rows } = await db
             .acceptFriendship(friendshipId)
             .catch((err) => console.log(err));
         console.log("rows after accepting: ", rows);
-        res.json(textInButton.delete);
+        res.json({ buttonText: textInButton.delete });
     } else {
         const { rows } = await db
             .addFriendship(req.session.userId, otherUserId)
             .catch((err) => console.log(err));
         console.log("data in Insert Friend: ", rows);
 
-        res.json(textInButton.cancel);
+        res.json({ buttonText: textInButton.cancel });
     }
 });
 

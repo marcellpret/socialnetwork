@@ -1,6 +1,5 @@
 import BioEditor from "./bioEditor";
 import ProfileWidget from "./profileWidget";
-import FriendButton from "./friendButton";
 
 export default function Profile({
     first,

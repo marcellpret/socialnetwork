@@ -3,8 +3,18 @@ export default function friendsAndWannabesReducer(state = [], action) {
         state = action.payload.data;
     }
 
-    if (action.type == "friends/accepted") {
-        state = action.payload.data;
+    if (action.type == "friends/accept") {
+        state = state.map((friend) => {
+            if (friend.id == action.payload.id) {
+                return { ...friend, accepted: true };
+            }
+        });
+    }
+
+    if (action.type == "friends/unfriended") {
+        state = state.filter((friend) => {
+            return friend.id != action.payload.id;
+        });
     }
 
     return state;

@@ -124,6 +124,10 @@ nav .btn:hover {
     filter: drop-shadow(1px 1px 3px rgba(53, 53, 53, 0.5));
 }
 
+.profile {
+    width: 100%;
+}
+
 .profile-widget {
     height: 50px;
 }
@@ -222,7 +226,7 @@ nav .btn:hover {
     gap: 2em;
     flex-wrap: wrap;
     padding: 2em;
-    background-color: var(--light);
+    background-color: rgba(217, 217, 217, 0.5);
     border-radius: 3px;
 }
 
@@ -287,8 +291,9 @@ nav .btn:hover {
     gap: 1em;
     align-items: center;
     width: 31.1%;
+    max-width: 350px;
     min-width: 250px;
-    background-color: var(--light);
+    background-color: rgba(217, 217, 217, 0.5);
     padding: 1em;
     border-radius: 3px;
     border: 1px dotted var(--accent);

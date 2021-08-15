@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { buttonState, buttonTxt } from "./redux/friendship/slice";
+import { acceptFriendRequest, friendsAndWannabes } from "./redux/friends/slice";
 
 export default function FriendButton({ otherUserId }) {
     console.log("otherUserId: ", otherUserId);
-
-    const [buttonText, setButtonText] = useState("");
-    const [friendshipId, setFriendshipId] = useState();
+    const dispatch = useDispatch();
+    // const [buttonText, setButtonText] = useState("");
+    // const [friendshipId, setFriendshipId] = useState();
 
     useEffect(() => {
         (async () => {
@@ -13,24 +16,34 @@ export default function FriendButton({ otherUserId }) {
                 `/checkFriendStatus/${otherUserId}`
             );
             console.log("data in useEffect in friendButton: ", data);
-            setButtonText(data.buttonText);
-            setFriendshipId(data.id);
+            // setButtonText(data.buttonText);
+            // setFriendshipId(data.id);
+            dispatch(buttonState(data));
         })();
     }, []);
 
+    const friendship = useSelector((state) => {
+        return state.friendship;
+    });
+
+    const text = friendship.buttonText;
+    const id = friendship.id;
+
     async function handleFriendship() {
         const { data } = await axios.post("/friendship", {
-            buttonText,
+            text,
             otherUserId,
-            friendshipId,
+            id,
         });
         console.log("data in handleFriendship: ", data);
-        setButtonText(data);
+        dispatch(buttonTxt(data));
+        // setButtonText(data);
     }
 
     return (
         <div>
-            <button onClick={handleFriendship}>{buttonText}</button>
+            <button onClick={handleFriendship}>{text}</button>
         </div>
     );
 }
+//

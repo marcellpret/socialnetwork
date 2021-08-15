@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import Logo from "./logo";
 import Profile from "./profile";
 import ProfileWidget from "./profileWidget";
@@ -123,7 +123,7 @@ export default class App extends Component {
                         />
                         <Route
                             path="/findpeople"
-                            render={(props) => <FindPeople />}
+                            render={() => <FindPeople />}
                         />
                         <Route path="/friends" render={() => <Friends />} />
                     </div>
