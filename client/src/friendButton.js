@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { buttonState, buttonTxt } from "./redux/friendship/slice";
-import { acceptFriendRequest, friendsAndWannabes } from "./redux/friends/slice";
 
 export default function FriendButton({ otherUserId }) {
     console.log("otherUserId: ", otherUserId);

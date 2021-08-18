@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS reset_codes;
 DROP TABLE IF EXISTS friendships;
+DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS users;
 
 
@@ -27,3 +28,12 @@ DROP TABLE IF EXISTS users;
    recipient_id INT REFERENCES users(id) NOT NULL,
    accepted BOOLEAN DEFAULT false
    );
+   
+   CREATE TABLE messages(
+   id SERIAL PRIMARY KEY,
+   text VARCHAR NOT NULL,
+   user_id INT REFERENCES users(id) NOT NULL,
+   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+
+   INSERT INTO messages VALUES ('Testing the chat', '1')

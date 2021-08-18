@@ -11,6 +11,15 @@ const multer = require("multer");
 const uidSafe = require("uid-safe");
 const ses = require("./ses");
 const s3 = require("./s3");
+
+// socket.io boilerplate
+
+const server = require("http").Server(app);
+const io = require("socket.io")(server, {
+    allowRequest: (req, callback) =>
+        callback(null, req.headers.referer.startsWith("http://localhost:3000")),
+});
+
 const { async } = require("crypto-random-string");
 
 const diskStorage = multer.diskStorage({
@@ -35,13 +44,17 @@ const secretCode = cryptoRandomString({
     length: 6,
 });
 
-app.use(
-    cookieSession({
-        secret: process.env.COOKIE_SECRET || secrets.COOKIE_SECRET,
-        maxAge: 1000 * 60 * 60 * 24 * 14,
-        sameSite: true,
-    })
-);
+const cookieSessionMiddleware = cookieSession({
+    secret: process.env.COOKIE_SECRET || secrets.COOKIE_SECRET,
+    maxAge: 1000 * 60 * 60 * 24 * 14,
+    sameSite: true,
+});
+
+app.use(cookieSessionMiddleware);
+
+io.use((socket, next) => {
+    cookieSessionMiddleware(socket.request, socket.request.res, next);
+});
 
 app.use(express.json());
 
@@ -139,6 +152,30 @@ app.get("/friends-and-wannabees", async (req, res) => {
     } catch (error) {
         console.log("error in Friends and Wanna: ", error);
     }
+});
+
+app.post("/accept/friendship", async (req, res) => {
+    const { text: buttonText, otherUserId, id: friendshipId } = req.body;
+    // console.log("req.body in Friendship: ", req.body);
+
+    const { rows } = await db
+        .acceptFriendship(friendshipId)
+        .catch((err) => console.log(err));
+    console.log("rows after accepting: ", rows);
+    res.json(rows[0]);
+});
+
+app.post("/end/friendship", async (req, res) => {
+    const { text: buttonText, otherUserId, id: friendshipId } = req.body;
+    console.log("req.body in Friendship: ", req.body);
+
+    const { rows } = await db
+        .deleteFriendship(friendshipId)
+        .catch((err) => console.log(err));
+
+    console.log("rows after deleting: ", rows);
+
+    res.json(rows[0]);
 });
 
 app.post("/register", (req, res) => {
@@ -338,6 +375,36 @@ app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "..", "client", "index.html"));
 });
 
-app.listen(process.env.PORT || 3001, function () {
+server.listen(process.env.PORT || 3001, function () {
     console.log("I'm listening.");
+});
+
+io.on("connection", async function (socket) {
+    const userId = socket.request.session.userId;
+
+    try {
+        const { rows } = await db.getMessages();
+        console.log("rows in Socket: ", rows);
+
+        socket.emit("last-10-messages", rows);
+    } catch (error) {
+        console.log("error in Socket Connection: ", error);
+    }
+
+    socket.on("new-message", async (data) => {
+        console.log("data - New message from Chat: ", data);
+        try {
+            const { rows: message } = await db.getNewMessage(data, userId);
+            console.log("new message in the chat: ", message);
+
+            // const { rows: newMessage } = await db.getNewMessage();
+            // console.log("newMessage: ", newMessage);
+
+            io.emit("new-message-back", message);
+        } catch (error) {
+            console.log("error in New Message: ", error);
+        }
+    });
+
+    console.log("userId in Socket connection: ", userId);
 });

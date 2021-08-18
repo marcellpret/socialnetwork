@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Logo from "./logo";
 import Profile from "./profile";
 import ProfileWidget from "./profileWidget";
@@ -8,6 +8,7 @@ import OthersProfile from "./othersProfile";
 import Uploader from "./uploader";
 import axios from "axios";
 import Friends from "./friends";
+import Chat from "./chat";
 
 export default class App extends Component {
     constructor() {
@@ -72,6 +73,9 @@ export default class App extends Component {
                             <Logo />
                         </Link>
                         <div>
+                            <Link className="btn" to="/chat">
+                                Chat
+                            </Link>
                             <Link className="btn" to="/friends">
                                 Friends
                             </Link>
@@ -126,6 +130,7 @@ export default class App extends Component {
                             render={() => <FindPeople />}
                         />
                         <Route path="/friends" render={() => <Friends />} />
+                        <Route path="/chat" component={Chat} />
                     </div>
                 </Router>
             </div>

@@ -6,7 +6,6 @@ import {
     unfriend,
 } from "./redux/friends/slice";
 import { useDispatch, useSelector } from "react-redux";
-import FriendButton from "./friendButton";
 
 export default function Friends() {
     const dispatch = useDispatch();

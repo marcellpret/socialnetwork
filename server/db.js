@@ -80,7 +80,7 @@ module.exports.acceptFriendship = (friendship_id) => {
     return db.query(
         `UPDATE friendships 
         SET accepted='true' 
-        WHERE (id = $1) RETURNING accepted`,
+        WHERE (id = $1) RETURNING id, accepted`,
         [friendship_id]
     );
 };
@@ -98,5 +98,44 @@ module.exports.getFriendsAndWannabees = (id) => {
         OR (accepted = TRUE AND recipient_id = $1 AND sender_id = users.id) 
         OR (accepted = TRUE AND sender_id = $1 AND recipient_id = users.id)`,
         [id]
+    );
+};
+
+module.exports.getMessages = () => {
+    return db.query(
+        `SELECT users.first,users.last, users.avatar, messages.text, messages.id, messages.user_id
+        FROM messages
+        JOIN users
+        ON (users.id = user_id)
+        ORDER BY messages.id DESC
+        LIMIT 10`
+    );
+};
+
+module.exports.newMessage = (text, userId) => {
+    return db.query(
+        `INSERT INTO messages (text, user_id) VALUES ($1,$2) RETURNING text`,
+        [text, userId]
+    );
+};
+
+// module.exports.getNewMessage = () => {
+//     return db.query(
+//         `SELECT users.first,users.last, users.avatar, messages.text, messages.id, messages.user_id
+//         FROM messages
+//         JOIN users
+//         ON (users.id = user_id)
+//         ORDER BY messages.id DESC
+//         LIMIT 1`
+//     );
+// };
+
+module.exports.getNewMessage = (text, userId) => {
+    return db.query(
+        `WITH "user" 
+        AS ( SELECT * FROM users WHERE id = $2),
+        new_message AS (INSERT INTO messages (text, user_id) VALUES ($1, $2) RETURNING text, user_id)
+        SELECT first, last, avatar, text, user_id FROM "user", new_message`,
+        [text, userId]
     );
 };

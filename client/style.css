@@ -322,3 +322,55 @@ nav .btn:hover {
 section h2 {
     margin-bottom: 1em;
 }
+
+.chat-box {
+    width: 500px;
+    height: 500px;
+    background-color: var(--light);
+    overflow: auto;
+    border-radius: 3px;
+    padding: 1em;
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.chat-message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+    margin-bottom: 1em;
+}
+
+.chat-message p::before {
+    position: absolute;
+    top: 10px;
+    left: -10px;
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+
+    border-right: 10px solid whitesmoke;
+}
+
+.chat-message p {
+    position: relative;
+    border-radius: 3px;
+    background-color: whitesmoke;
+    padding: 0.5em;
+}
+
+.chat-message em {
+    color: var(--accent);
+    font-weight: 300;
+}
+
+.chat-message img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 1em;
+}
