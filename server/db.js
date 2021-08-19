@@ -32,6 +32,22 @@ module.exports.addCode = (email, code) => {
     );
 };
 
+module.exports.getCode = (email) => {
+    return db.query(
+        `SELECT email, code FROM reset_codes
+        WHERE email=$1 
+        AND CURRENT_TIMESTAMP - timestamp < INTERVAL '10 minutes'`,
+        [email]
+    );
+};
+
+module.exports.updatePassword = (email, hashed_password) => {
+    return db.query(`UPDATE users SET hashed_password=($2) WHERE email=($1)`, [
+        email,
+        hashed_password,
+    ]);
+};
+
 module.exports.updateAvatar = (userId, avatar) => {
     return db.query(
         `UPDATE users SET avatar=($2) WHERE id=($1) RETURNING avatar`,
@@ -112,21 +128,10 @@ module.exports.getMessages = () => {
     );
 };
 
-module.exports.newMessage = (text, userId) => {
-    return db.query(
-        `INSERT INTO messages (text, user_id) VALUES ($1,$2) RETURNING text`,
-        [text, userId]
-    );
-};
-
-// module.exports.getNewMessage = () => {
+// module.exports.newMessage = (text, userId) => {
 //     return db.query(
-//         `SELECT users.first,users.last, users.avatar, messages.text, messages.id, messages.user_id
-//         FROM messages
-//         JOIN users
-//         ON (users.id = user_id)
-//         ORDER BY messages.id DESC
-//         LIMIT 1`
+//         `INSERT INTO messages (text, user_id) VALUES ($1,$2) RETURNING text`,
+//         [text, userId]
 //     );
 // };
 

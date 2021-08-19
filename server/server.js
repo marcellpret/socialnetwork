@@ -84,7 +84,7 @@ app.get("/api/user/:id", async (req, res) => {
     }
 });
 
-const textInButton = {
+const TEXT_IN_BUTTON = {
     cancel: "❌ Cancel Friend Request",
     delete: "❌ UNfriend",
     add: "➕ Add Friend",
@@ -100,16 +100,16 @@ app.get("/checkFriendStatus/:otherUserId", async (req, res) => {
         );
         console.log("rows in checkFriendship: ", rows);
         if (!rows[0]) {
-            res.json({ buttonText: textInButton.add });
+            res.json({ buttonText: TEXT_IN_BUTTON.add });
         } else if (rows[0].accepted) {
-            res.json({ ...rows[0], buttonText: textInButton.delete });
+            res.json({ ...rows[0], buttonText: TEXT_IN_BUTTON.delete });
         } else if (
             parseInt(req.params.otherUserId) === parseInt(rows[0].sender_id) &&
             rows[0].accepted === false
         ) {
-            res.json({ ...rows[0], buttonText: textInButton.accept });
+            res.json({ ...rows[0], buttonText: TEXT_IN_BUTTON.accept });
         } else {
-            res.json({ ...rows[0], buttonText: textInButton.cancel });
+            res.json({ ...rows[0], buttonText: TEXT_IN_BUTTON.cancel });
         }
     } catch (error) {
         console.log;
@@ -117,30 +117,30 @@ app.get("/checkFriendStatus/:otherUserId", async (req, res) => {
 });
 
 app.post("/friendship", async (req, res) => {
-    const { text: buttonText, otherUserId, id: friendshipId } = req.body;
+    const { buttonText, otherUserId, id: friendshipId } = req.body;
     console.log("req.body in Friendship: ", req.body);
 
     if (
-        buttonText === textInButton.cancel ||
-        buttonText === textInButton.delete
+        buttonText === TEXT_IN_BUTTON.cancel ||
+        buttonText === TEXT_IN_BUTTON.delete
     ) {
         const { rows } = await db
             .deleteFriendship(friendshipId)
             .catch((err) => console.log(err));
-        res.json({ buttonText: textInButton.add });
-    } else if (buttonText === textInButton.accept) {
+        res.json({ buttonText: TEXT_IN_BUTTON.add });
+    } else if (buttonText === TEXT_IN_BUTTON.accept) {
         const { rows } = await db
             .acceptFriendship(friendshipId)
             .catch((err) => console.log(err));
         console.log("rows after accepting: ", rows);
-        res.json({ buttonText: textInButton.delete });
+        res.json({ buttonText: TEXT_IN_BUTTON.delete });
     } else {
         const { rows } = await db
             .addFriendship(req.session.userId, otherUserId)
             .catch((err) => console.log(err));
         console.log("data in Insert Friend: ", rows);
 
-        res.json({ buttonText: textInButton.cancel });
+        res.json({ buttonText: TEXT_IN_BUTTON.cancel });
     }
 });
 
@@ -152,30 +152,6 @@ app.get("/friends-and-wannabees", async (req, res) => {
     } catch (error) {
         console.log("error in Friends and Wanna: ", error);
     }
-});
-
-app.post("/accept/friendship", async (req, res) => {
-    const { text: buttonText, otherUserId, id: friendshipId } = req.body;
-    // console.log("req.body in Friendship: ", req.body);
-
-    const { rows } = await db
-        .acceptFriendship(friendshipId)
-        .catch((err) => console.log(err));
-    console.log("rows after accepting: ", rows);
-    res.json(rows[0]);
-});
-
-app.post("/end/friendship", async (req, res) => {
-    const { text: buttonText, otherUserId, id: friendshipId } = req.body;
-    console.log("req.body in Friendship: ", req.body);
-
-    const { rows } = await db
-        .deleteFriendship(friendshipId)
-        .catch((err) => console.log(err));
-
-    console.log("rows after deleting: ", rows);
-
-    res.json(rows[0]);
 });
 
 app.post("/register", (req, res) => {
@@ -351,25 +327,42 @@ app.post("/password/reset/start", (req, res) => {
         });
 });
 
-// app.post("/password/reset/verify", (req, res) => {
-//     const { email } = req.body;
+app.post("/password/reset/verify", async (req, res) => {
+    console.log("req.body in RESET: ", req.body);
 
-//     db.loginUser(req.body.email)
-//         .then(({ rows: user }) => {
-//             console.log("user: ", user);
-//             if (user.length === 0) {
-//                 res.json({
-//                     success: false,
-//                 });
-//             } else {
-//                 res.json({ success: true });
-//             }
-//         })
-//         .catch((err) => {
-//             console.log("err in loginUser: ", err);
-//             res.json({ success: false });
-//         });
-// });
+    const { email, code, password } = req.body;
+
+    try {
+        const { rows } = await db.getCode(email);
+        console.log("code in Verify Code: ", rows);
+        const codeToVerify = rows[0].code;
+
+        if (codeToVerify === code) {
+            const hashed_password = await encrypt.hash(password);
+            console.log("hashed_password in VERIFY: ", hashed_password);
+
+            const { rows } = await db.updatePassword(email, hashed_password);
+
+            res.json({ success: true });
+        } else {
+            res.json({ success: false });
+        }
+    } catch (error) {
+        console.log("error in Code Verify: ", error);
+        res.json({ success: false });
+    }
+});
+
+app.get("/userInfo/:userId", async (req, res) => {
+    console.log("req.body in userInfo: ", req.params.userId);
+
+    try {
+        const { rows } = await db.getUser(req.params.userId);
+        res.json(rows[0]);
+    } catch (error) {
+        console.log("error in userInfo: ", error);
+    }
+});
 
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "..", "client", "index.html"));
@@ -379,13 +372,22 @@ server.listen(process.env.PORT || 3001, function () {
     console.log("I'm listening.");
 });
 
+const onlineUsers = {};
+
 io.on("connection", async function (socket) {
+    if (!socket.request.session.userId) {
+        return socket.disconnect(true);
+    }
+
     const userId = socket.request.session.userId;
+    onlineUsers[socket.id] = userId;
+
+    console.log("onlineUsers: ", onlineUsers);
+
+    io.emit("online-users", Object.values(onlineUsers));
 
     try {
         const { rows } = await db.getMessages();
-        console.log("rows in Socket: ", rows);
-
         socket.emit("last-10-messages", rows);
     } catch (error) {
         console.log("error in Socket Connection: ", error);
@@ -397,13 +399,19 @@ io.on("connection", async function (socket) {
             const { rows: message } = await db.getNewMessage(data, userId);
             console.log("new message in the chat: ", message);
 
-            // const { rows: newMessage } = await db.getNewMessage();
-            // console.log("newMessage: ", newMessage);
-
             io.emit("new-message-back", message);
         } catch (error) {
             console.log("error in New Message: ", error);
         }
+    });
+
+    socket.on("disconnect", () => {
+        console.log(
+            `User ${userId} just disconnected with socket ${socket.id}`
+        );
+        delete onlineUsers[socket.id];
+        io.emit("offline-user", userId);
+        console.log("onlineUsers after closing browser: ", onlineUsers);
     });
 
     console.log("userId in Socket connection: ", userId);

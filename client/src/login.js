@@ -64,7 +64,7 @@ export class Login extends Component {
 
     render() {
         return (
-            <section>
+            <section className="login">
                 <form className="registrationForm">
                     <label htmlFor="email">Email</label>
                     <input
@@ -85,7 +85,8 @@ export class Login extends Component {
                 </form>
                 {this.state.error && <h2>{this.state.error}</h2>}
                 <Link to="/reset-password">
-                    Did you forget your password? Click here to reset.
+                    Did you forget your password?,
+                    <br /> Click here to reset.
                 </Link>{" "}
                 <br />
                 <Link to="/">Click here to Register!</Link>

@@ -7,7 +7,7 @@ export default function friendsAndWannabesReducer(state = [], action) {
 
     if (action.type === "friends/accept") {
         return state.map((friend) => {
-            if (friend.id == action.payload.id) {
+            if (friend.id == action.payload.otherUserId) {
                 return { ...friend, accepted: true };
             } else {
                 return friend;
@@ -17,8 +17,12 @@ export default function friendsAndWannabesReducer(state = [], action) {
 
     if (action.type === "friends/unfriended") {
         return state.filter((friend) => {
-            return friend.id != action.payload.id;
+            return friend.id != action.payload.otherUserId;
         });
+    }
+
+    if (action.type === "friends/add") {
+        return [...state, action.payload.data];
     }
 
     return state;
@@ -31,12 +35,15 @@ export function friendsAndWannabes(data) {
     };
 }
 
-export function acceptFriendRequest(id) {
+export function acceptFriendRequest(id, otherUserId, buttonText) {
     return async (dispatch) => {
-        const { data } = await axios.post("/accept/friendship", { id });
+        const { data } = await axios.post("/friendship", {
+            id,
+            buttonText,
+        });
         dispatch({
             type: "friends/accept",
-            payload: { id },
+            payload: { otherUserId },
         });
     };
 
@@ -46,17 +53,25 @@ export function acceptFriendRequest(id) {
     // };
 }
 
-export function unfriend(id) {
+export function unfriend(id, otherUserId, buttonText) {
     return async (dispatch) => {
-        const { data } = await axios.post("/end/friendship", { id });
+        const { data } = await axios.post("/friendship", { id, buttonText });
         dispatch({
             type: "friends/unfriended",
-            payload: { id },
+            payload: { otherUserId },
         });
     };
+}
 
-    // return {
-    //     type: "friends/unfriended",
-    //     payload: { id },
-    // };
+export function addFriend(otherUserId, buttonText) {
+    return async (dispatch) => {
+        const { data } = await axios.post("/friendship", {
+            otherUserId,
+            buttonText,
+        });
+        dispatch({
+            type: "friends/add",
+            payload: { data },
+        });
+    };
 }

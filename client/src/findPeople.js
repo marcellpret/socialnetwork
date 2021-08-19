@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import OthersProfile from "./othersProfile";
+import FriendButton from "./friendButton";
 
 export default function FindPeople() {
     // console.log("props - info passed down from parent (App) --> ", props);
@@ -42,9 +43,12 @@ export default function FindPeople() {
                                 src={latestUser.avatar}
                                 alt={`${latestUser.first} ${latestUser.last}`}
                             />
-                            <p>
-                                {latestUser.first} {latestUser.last}
-                            </p>
+                            <div>
+                                <p>
+                                    {latestUser.first} {latestUser.last}
+                                </p>
+                                <FriendButton otherUserId={latestUser.id} />
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -64,6 +68,9 @@ export default function FindPeople() {
                         users.map((user) => (
                             <div className="result-people" key={user.id}>
                                 <img
+                                    onError={(e) =>
+                                        (e.target.src = "images/default.png")
+                                    }
                                     src={user.avatar}
                                     alt={`${user.first} ${user.last}`}
                                 />

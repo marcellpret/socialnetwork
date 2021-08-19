@@ -6,6 +6,7 @@ import {
     unfriend,
 } from "./redux/friends/slice";
 import { useDispatch, useSelector } from "react-redux";
+import FriendButton from "./friendButton";
 
 export default function Friends() {
     const dispatch = useDispatch();
@@ -36,59 +37,52 @@ export default function Friends() {
 
     return (
         <div className="width100">
-            <section className="friends">
-                <h2>Friends</h2>
-                <div>
-                    {friends.map((friend) => (
-                        <div className="result-people" key={friend.id}>
-                            <img
-                                src={friend.avatar}
-                                alt={`${friend.first} ${friend.last}`}
-                            />
-                            <div>
-                                <p>
-                                    {friend.first} {friend.last}
-                                </p>
-                                <button
-                                    onClick={() =>
-                                        dispatch(unfriend(friend.id))
-                                    }
-                                >
-                                    Unfriend
-                                </button>
+            {friends.length !== 0 && (
+                <section className="friends">
+                    <h2>Friends</h2>
+                    <div>
+                        {friends.map((friend) => (
+                            <div className="result-people" key={friend.id}>
+                                <img
+                                    src={friend.avatar}
+                                    alt={`${friend.first} ${friend.last}`}
+                                />
+                                <div>
+                                    <p>
+                                        {friend.first} {friend.last}
+                                    </p>
+                                    <FriendButton otherUserId={friend.id} />
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-            <section className="wannabes">
-                <h2>Friendship Requests</h2>
-                <div>
-                    {wannabes.map((wannabe) => (
-                        <div className="result-people" key={wannabe.id}>
-                            <img
-                                src={wannabe.avatar}
-                                alt={`${wannabe.first} ${wannabe.last}`}
-                            />
-                            <div className="width100">
-                                <p>
-                                    {wannabe.first} {wannabe.last}
-                                </p>
-                                {/* <FriendButton otherUserId={wannabe.id} /> */}
-                                <button
-                                    onClick={() =>
-                                        dispatch(
-                                            acceptFriendRequest(wannabe.id)
-                                        )
-                                    }
-                                >
-                                    Accept Friend
-                                </button>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {wannabes.length !== 0 && (
+                <section className="wannabes">
+                    <h2>Friendship Requests</h2>
+                    <div>
+                        {wannabes.map((wannabe) => (
+                            <div className="result-people" key={wannabe.id}>
+                                <img
+                                    src={wannabe.avatar}
+                                    alt={`${wannabe.first} ${wannabe.last}`}
+                                />
+                                <div className="width100">
+                                    <p>
+                                        {wannabe.first} {wannabe.last}
+                                    </p>
+                                    <FriendButton otherUserId={wannabe.id} />
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
+                        ))}
+                    </div>
+                </section>
+            )}
+            {friends.length === 0 && wannabes.length === 0 && (
+                <h1>You don't have any friends nor requests :(</h1>
+            )}
         </div>
     );
 }

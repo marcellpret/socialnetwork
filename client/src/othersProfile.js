@@ -43,9 +43,9 @@ export default class OthersProfile extends Component {
                     <FriendButton otherUserId={this.props.match.params.id} />
                 </div>
                 <div className="info-profile">
-                    <h3>
+                    <h2>
                         {this.state.first} {this.state.last}
-                    </h3>
+                    </h2>
                     <p>{this.state.bio}</p>
                 </div>
             </div>

@@ -26,7 +26,7 @@ body {
     color: var(--dark);
     background-color: var(--light);
     background-image: linear-gradient(
-        3000deg,
+        150deg,
         var(--accent) -40%,
         var(--light) 70%
     );
@@ -39,6 +39,46 @@ main {
     max-width: 1400px;
     width: 90vw;
     margin: 0 auto;
+    color: var(--dark);
+}
+
+header {
+    text-align: center;
+}
+
+header img {
+    margin-block: 4em;
+}
+
+header h1 {
+    font-size: 3em;
+}
+
+.registrationForm input {
+    border-radius: 3px;
+    border: none;
+    width: 300px;
+}
+
+.welcome {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    margin: 3em auto;
+    gap: 3em;
+}
+
+.welcome > div {
+    font-size: 1.2rem;
+    line-height: 1.5em;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 300px;
+    margin: 3em auto;
 }
 
 textarea {
@@ -195,12 +235,16 @@ nav .btn:hover {
 }
 
 .info-profile h2 {
-    margin-bottom: 2em;
+    margin-bottom: 1.5em;
 }
 
 .others-profile {
     display: flex;
     gap: 2em;
+}
+
+.others-profile p {
+    max-width: 500px;
 }
 
 .others-profile .profile-pic {
@@ -319,6 +363,16 @@ nav .btn:hover {
     width: 100%;
 }
 
+.wannabes > div,
+.friends > div {
+    display: flex;
+    gap: 1em;
+}
+
+section {
+    margin-bottom: 2em;
+}
+
 section h2 {
     margin-bottom: 1em;
 }
@@ -373,4 +427,36 @@ section h2 {
     object-fit: cover;
     border-radius: 50%;
     margin-right: 1em;
+}
+
+.online-users img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: -10px;
+    box-shadow: 0 -2px 5px var(--accent);
+    transition: transform 200ms ease-in-out;
+}
+
+.online-users img:hover {
+    transform: scale(1.1);
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    padding-block: 2em;
+}
+
+.online-users {
+    border-left: 5px solid var(--accent);
+    display: flex;
+    align-items: center;
+}
+
+.online-users h3 {
+    margin-right: 1em;
+    margin-left: 1em;
+    color: var(--accent);
 }

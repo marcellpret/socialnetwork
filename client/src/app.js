@@ -9,6 +9,7 @@ import Uploader from "./uploader";
 import axios from "axios";
 import Friends from "./friends";
 import Chat from "./chat";
+import OnlineUsers from "./onlineUsers";
 
 export default class App extends Component {
     constructor() {
@@ -68,7 +69,7 @@ export default class App extends Component {
         return (
             <div>
                 <Router>
-                    <nav>
+                    <nav className="content">
                         <Link to="/">
                             <Logo />
                         </Link>
@@ -132,6 +133,9 @@ export default class App extends Component {
                         <Route path="/friends" render={() => <Friends />} />
                         <Route path="/chat" component={Chat} />
                     </div>
+                    <footer>
+                        <OnlineUsers />
+                    </footer>
                 </Router>
             </div>
         );

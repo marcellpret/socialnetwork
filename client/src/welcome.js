@@ -8,8 +8,10 @@ import Logo from "./logo";
 export default function Welcome() {
     return (
         <>
-            <Logo />
-            <h1>Welcome!</h1>
+            <header>
+                <Logo />
+                <h1>Welcome!</h1>
+            </header>
             <Router>
                 <div>
                     <Route exact path="/" component={Registration} />

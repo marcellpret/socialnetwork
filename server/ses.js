@@ -29,6 +29,19 @@ let sendEmail = (code) => {
                         Your verification code expires in 10 minutes, make sure to use it before that.
                         `,
                 },
+                Html: {
+                    Data: `<html>
+                    <head>
+                    <title>Your Token</title>
+                    </head>
+                    <body>
+                    <h1 style="color:rgb(60, 110, 113);">Hello</h1>
+                    <p>Your Verification Code is</p>
+                    <h2 style="color:red;">${code}</h2>
+                    <p>Simply copy this code and paste it into the verification input field.</p>
+                    <em>Your UNsocial Team</em>
+                    </body></html>`,
+                },
             },
             Subject: {
                 Data: "Your verification code",

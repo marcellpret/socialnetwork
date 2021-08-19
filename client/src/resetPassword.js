@@ -57,49 +57,23 @@ export class ResetPassword extends Component {
     // check the verification code and set a new password
     setNewPassword(e) {
         e.preventDefault(); // prevents button from triggering a refresh
-        this.setState({
-            view: 3,
+
+        axios.post("/password/reset/verify", this.state).then(({ data }) => {
+            if (data.success) {
+                console.log("data in setNewPassword: ", data);
+
+                this.setState({
+                    view: 3,
+                });
+            } else {
+                this.setState({
+                    error: "Something went wrong",
+                });
+            }
+            console.log("data in setNewPassword: ", data);
         });
     }
 
-    // handleSubmit(e) {
-    //     e.preventDefault(); // prevents button from triggering a refresh
-    //     console.log("user clicked register");
-    //     // when the btn gets clicked we want to make an axios request sending
-    //     // over our value of state
-    //     console.log("this.state in Register", this.state);
-
-    //     axios
-    //         .post("/login", this.state)
-    //         .then(({ data }) => {
-    //             console.log("data: ", data);
-
-    //             if (data.success) {
-    //                 // stuff worked well with registering we want to do sth
-    //                 // that sth is trigger a reload, so that our start.js runs
-    //                 // one more time and asks the server agin whether or not
-    //                 // the user has the correct cookie :)
-    //                 location.reload();
-    //             } else {
-    //                 // we should render an error!
-    //                 // we need to update our component's state to conditionally
-    //                 // make an error appear
-    //                 this.setState({
-    //                     error: "Wrong password",
-    //                 });
-    //             }
-    //         })
-    //         .catch(
-    //             (err) => {
-    //                 console.log("something went wrong in POST /login", err);
-    //                 this.setState({
-    //                     error: "No email found",
-    //                 });
-    //             }
-    //             // we need to update our component's state to conditionally
-    //             // make an error appear
-    //         );
-    // }
     componentDidMount() {
         console.log("Reset just mounted");
     }
@@ -108,7 +82,7 @@ export class ResetPassword extends Component {
         // this method determines what the render!
         if (this.state.view === 1) {
             return (
-                <section>
+                <section className="login">
                     <form className="registrationForm">
                         <label htmlFor="email">Email</label>
                         <input
@@ -127,7 +101,7 @@ export class ResetPassword extends Component {
             );
         } else if (this.state.view === 2) {
             return (
-                <section>
+                <section className="login">
                     <form className="registrationForm">
                         <label htmlFor="code">Verification Code</label>
                         <input
@@ -157,10 +131,10 @@ export class ResetPassword extends Component {
         } else if (this.state.view === 3) {
             // remember to also add a link to login ;)
             return (
-                <div>
+                <section className="login">
                     <h2>You can now log in with your new password!</h2>
                     <Link to="/login">Back to Login</Link>
-                </div>
+                </section>
             );
         }
     }
