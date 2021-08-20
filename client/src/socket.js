@@ -3,7 +3,7 @@ import { newMessage, getMessages } from "./redux/messages/slice";
 import { usersOnline, userOffline } from "./redux/users/slice";
 export let socket;
 
-export const init = (store) => {
+export const init = (store, userId) => {
     if (!socket) {
         socket = io.connect();
 
@@ -15,7 +15,9 @@ export const init = (store) => {
             store.dispatch(newMessage(data))
         );
 
-        socket.on("online-users", (data) => store.dispatch(usersOnline(data)));
+        socket.on("online-users", (data) =>
+            store.dispatch(usersOnline(data, userId))
+        );
 
         socket.on("offline-user", (data) => store.dispatch(userOffline(data)));
     }

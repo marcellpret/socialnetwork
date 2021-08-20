@@ -95,6 +95,10 @@ export class ResetPassword extends Component {
                         <button onClick={(e) => this.startResetPassword(e)}>
                             Send Code
                         </button>
+                        <Link to="/login">
+                            Oh! You do remember your password. <br />
+                            Click here to go back to Log in!
+                        </Link>
                     </form>
                     {this.state.error && <h2>{this.state.error}</h2>}
                 </section>

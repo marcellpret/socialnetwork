@@ -14,9 +14,10 @@ export default function usersReducer(state = [], action) {
     return state;
 }
 
-export function usersOnline(data) {
+export function usersOnline(data, userId) {
     return async (dispatch) => {
-        const pendingUserPromises = data.map(async (userId) => {
+        const filteredData = data.filter((user) => user != userId);
+        const pendingUserPromises = filteredData.map(async (userId) => {
             try {
                 const resp = await axios.get(`/userInfo/${userId}`);
                 console.log("data in slice User Online: ", resp);

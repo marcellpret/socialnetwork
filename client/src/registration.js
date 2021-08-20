@@ -67,15 +67,7 @@ export class Registration extends Component {
         return (
             <section className="welcome">
                 <div>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Tempora, consequatur aperiam doloremque, cum sunt labore
-                        soluta mollitia, delectus quas laudantium sequi? Iure
-                        quae laborum animi quasi quisquam earum voluptatibus
-                        facere porro ipsum a illum, blanditiis perspiciatis
-                        expedita nobis sequi maxime officia sapiente deleniti
-                        omnis. Nemo dignissimos dolor esse hic reprehenderit.
-                    </p>
+                    <p>Please register to join our network.</p>
                 </div>
                 <form className="registrationForm">
                     <label htmlFor="first">First Name</label>

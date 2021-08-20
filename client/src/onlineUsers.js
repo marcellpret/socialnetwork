@@ -5,6 +5,8 @@ export default function OnlineUsers() {
     const onlineUsers = useSelector((state) => state.users);
     console.log("onlineUsers: ", JSON.stringify(onlineUsers));
 
+    // const filteredUsers = onlineUsers.filter((user) => user.id != userId);
+
     return (
         <div className="online-users">
             <h3>We are online:</h3>
